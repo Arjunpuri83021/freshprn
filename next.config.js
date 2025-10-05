@@ -1,17 +1,30 @@
 /** @type {import('next').NextConfig} */
+const isProd = process.env.NODE_ENV === 'production'
+
 const nextConfig = {
   reactStrictMode: true,
   swcMinify: true,
   images: {
-    domains: ['localhost', 'hexmy.com', 'i.imgur.com', 'example.com'],
-    unoptimized: true
+    // Add ALL production image hosts here (API/CDN/external)
+    remotePatterns: [
+      { protocol: 'https', hostname: 'hexmy.com' },
+      // { protocol: 'https', hostname: 'your-api-host.com' },
+      // { protocol: 'https', hostname: 'your-cdn.com' },
+    ],
+    // Keep unoptimized if you are serving original images without Next/image optimization
+    unoptimized: true,
   },
   async rewrites() {
+    // In production, do NOT rewrite /api to localhost
+    if (isProd) return []
+
+    // Development-only API proxy to local backend
+    const devOrigin = process.env.DEV_API_ORIGIN || 'http://localhost:5000'
     return [
       {
         source: '/api/:path*',
-        destination: 'http://localhost:5000/:path*'
-      }
+        destination: `${devOrigin}/:path*`,
+      },
     ]
   },
   async headers() {
