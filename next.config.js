@@ -4,11 +4,13 @@ const isProd = process.env.NODE_ENV === 'production'
 const nextConfig = {
   reactStrictMode: true,
   swcMinify: true,
-  assetPrefix: isProd ? (process.env.NEXT_PUBLIC_ASSET_PREFIX || '') : '',
+  basePath: '',
+  assetPrefix: isProd ? (process.env.NEXT_PUBLIC_ASSET_PREFIX || '/') : '',
   images: {
     // Add ALL production image hosts here (API/CDN/external)
     remotePatterns: [
       { protocol: 'https', hostname: 'hexmy.com' },
+      { protocol: 'https', hostname: 'api.majehimaje.life' },
       // { protocol: 'https', hostname: 'your-api-host.com' },
       // { protocol: 'https', hostname: 'your-cdn.com' },
     ],
