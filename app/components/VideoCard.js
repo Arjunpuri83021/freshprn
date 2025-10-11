@@ -4,6 +4,7 @@ import { useState } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
 import { Play, Clock, Eye, Heart, Star } from 'lucide-react'
+import { api } from '../lib/api'
 
 export default function VideoCard({ video, priority = false }) {
   const [imageError, setImageError] = useState(false)
@@ -60,9 +61,24 @@ export default function VideoCard({ video, priority = false }) {
     return []
   }
 
+  // Handle video click to update views
+  const handleVideoClick = async () => {
+    try {
+      const videoId = video._id || video.id
+      const currentViews = parseInt(video.views) || 0
+      
+      // Update views in background (don't wait for response)
+      api.updateViews(videoId, currentViews).catch(error => {
+        console.log('Failed to update views:', error)
+      })
+    } catch (error) {
+      console.log('Error updating views:', error)
+    }
+  }
+
   return (
     <div className="video-card bg-gray-800 rounded-lg overflow-hidden shadow-lg group">
-      <Link href={`/video/${getVideoUrlSegment()}`}>
+      <Link href={`/video/${getVideoUrlSegment()}`} onClick={handleVideoClick}>
         <div className="relative aspect-video bg-gray-700">
           {/* Thumbnail Image */}
           {!imageError && video.imageUrl ? (
@@ -127,7 +143,7 @@ export default function VideoCard({ video, priority = false }) {
       {/* Video Info */}
       <div className="p-4 space-y-3">
         {/* Title */}
-        <Link href={`/video/${getVideoUrlSegment()}`}>
+        <Link href={`/video/${getVideoUrlSegment()}`} onClick={handleVideoClick}>
           <h3 className="text-white font-medium text-sm line-clamp-2 hover:text-purple-400 transition-colors duration-200">
             {getVideoTitle()}
           </h3>

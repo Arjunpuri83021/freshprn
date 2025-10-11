@@ -114,7 +114,7 @@ export default async function VideoDetailPage({ params, searchParams }) {
           <h1 className="text-2xl font-semibold mb-4">{video.titel || 'Video'}</h1>
 
           {/* Dummy player section with redirect on play click */}
-          <VideoRedirect link={video.link} imageUrl={video.imageUrl} title={video.titel} />
+          <VideoRedirect link={video.link} imageUrl={video.imageUrl} title={video.titel} video={video} />
 
           {/* Meta info */}
           <div className="mt-6 grid grid-cols-1 md:grid-cols-2 gap-4 text-sm text-gray-300">
