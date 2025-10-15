@@ -107,14 +107,39 @@ export default async function VideoDetailPage({ params, searchParams }) {
   const totalRelatedPages = Math.max(1, Math.ceil(totalRelated / pageSize))
   const pagedRelated = mergedRelated.slice((relatedPage - 1) * pageSize, relatedPage * pageSize)
 
-  return (
-    <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-      {relatedPage === 1 && (
-        <>
-          <h1 className="text-2xl font-semibold mb-4">{video.titel || 'Video'}</h1>
+  // Structured data for SEO
+  const structuredData = {
+    "@context": "https://schema.org",
+    "@type": "VideoObject",
+    "name": video.titel || video.title || 'Video',
+    "description": video.desc || video.metatitel || 'Watch premium video on Hexmy',
+    "thumbnailUrl": video.imageUrl || '',
+    "uploadDate": video.createdAt || new Date().toISOString(),
+    "duration": video.minutes ? `PT${video.minutes}M` : undefined,
+    "contentUrl": video.link || '',
+    "embedUrl": video.iframeUrl || undefined,
+    "interactionStatistic": {
+      "@type": "InteractionCounter",
+      "interactionType": { "@type": "WatchAction" },
+      "userInteractionCount": video.views || 0
+    }
+  }
 
-          {/* Dummy player section with redirect on play click */}
-          <VideoRedirect link={video.link} imageUrl={video.imageUrl} title={video.titel} video={video} />
+  return (
+    <>
+      {/* JSON-LD Structured Data */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}
+      />
+      
+      <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        {relatedPage === 1 && (
+          <>
+            <h1 className="text-2xl font-semibold mb-4">{video.titel || 'Video'}</h1>
+
+            {/* Dummy player section with redirect on play click */}
+            <VideoRedirect link={video.link} imageUrl={video.imageUrl} title={video.titel} video={video} />
 
           {/* Meta info */}
           <div className="mt-6 grid grid-cols-1 md:grid-cols-2 gap-4 text-sm text-gray-300">
@@ -166,6 +191,7 @@ export default async function VideoDetailPage({ params, searchParams }) {
           <Pagination basePath={`/video/${id}-${slugify(video?.titel || video?.title || '')}?`} currentPage={relatedPage} totalPages={totalRelatedPages} />
         </div>
       )}
-    </div>
+      </div>
+    </>
   )
 }

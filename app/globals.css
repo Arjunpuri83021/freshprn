@@ -143,6 +143,26 @@ a {
   background: linear-gradient(180deg, rgba(var(--brand-primary), 1), rgba(var(--brand-accent), 1));
 }
 
+/* Video thumbnail preview responsive sizes */
+.video-thumbnail-preview {
+  width: 192px;
+  height: 108px;
+}
+
+@media (min-width: 640px) {
+  .video-thumbnail-preview {
+    width: 256px;
+    height: 144px;
+  }
+}
+
+@media (min-width: 768px) {
+  .video-thumbnail-preview {
+    width: 320px;
+    height: 180px;
+  }
+}
+
 /* Mobile optimizations */
 @media (max-width: 768px) {
   .container {
