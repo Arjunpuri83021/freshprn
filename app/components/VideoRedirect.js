@@ -1,8 +1,8 @@
 'use client'
 
 import Image from 'next/image'
-import { useCallback, useState } from 'react'
-import { Play } from 'lucide-react'
+import { useCallback, useState, useEffect } from 'react'
+import { Play, AlertCircle } from 'lucide-react'
 import { api } from '../lib/api'
 
 // Extract domain name from URL
@@ -19,6 +19,9 @@ function extractDomain(url) {
 export default function VideoRedirect({ link, imageUrl, title, video }) {
   // Auto-show iframe if iframeUrl is available
   const [showIframe, setShowIframe] = useState(!!video?.iframeUrl)
+  const [iframeError, setIframeError] = useState(false)
+  const [useProxy, setUseProxy] = useState(false)
+  const [proxyUrl, setProxyUrl] = useState('')
   const hasIframe = !!video?.iframeUrl
   const domain = extractDomain(link)
 
@@ -47,28 +50,80 @@ export default function VideoRedirect({ link, imageUrl, title, video }) {
     }
   }, [link, video, hasIframe, showIframe])
 
+  // Handle iframe errors - fallback to external link
+  const handleIframeError = useCallback(() => {
+    console.log('⚠️ Iframe failed to load, attempting proxy...');
+    setIframeError(true);
+    
+    // Try proxy first
+    if (video?.iframeUrl && !useProxy) {
+      const encodedUrl = encodeURIComponent(video.iframeUrl);
+      const proxyEndpoint = `${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}/proxy-video?url=${encodedUrl}`;
+      setProxyUrl(proxyEndpoint);
+      setUseProxy(true);
+      
+      // Check if proxy works
+      fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}/check-video-url?url=${encodedUrl}`)
+        .then(res => res.json())
+        .then(data => {
+          if (!data.accessible) {
+            console.log('❌ Proxy also failed, redirecting to external link...');
+            setTimeout(() => {
+              if (link) window.location.href = link;
+            }, 2000);
+          }
+        })
+        .catch(() => {
+          console.log('❌ Proxy check failed, redirecting to external link...');
+          setTimeout(() => {
+            if (link) window.location.href = link;
+          }, 2000);
+        });
+    } else {
+      // Proxy also failed, redirect to external link
+      console.log('❌ All methods failed, redirecting to external link...');
+      setTimeout(() => {
+        if (link) window.location.href = link;
+      }, 2000);
+    }
+  }, [video?.iframeUrl, link, useProxy]);
+
   // If iframe is available and should be shown, display it
   if (showIframe && video?.iframeUrl) {
     // Add autoplay parameter to the iframe URL if it's a YouTube or Vimeo URL
-    let iframeUrl = video.iframeUrl
-    if (iframeUrl.includes('youtube.com') || iframeUrl.includes('youtu.be')) {
-      iframeUrl = iframeUrl.includes('?') 
-        ? `${iframeUrl}&autoplay=1&mute=1` 
-        : `${iframeUrl}?autoplay=1&mute=1`
-    } else if (iframeUrl.includes('vimeo.com')) {
-      iframeUrl = iframeUrl.includes('?') 
-        ? `${iframeUrl}&autoplay=1` 
-        : `${iframeUrl}?autoplay=1`
+    let iframeUrl = useProxy ? proxyUrl : video.iframeUrl;
+    
+    if (!useProxy) {
+      if (iframeUrl.includes('youtube.com') || iframeUrl.includes('youtu.be')) {
+        iframeUrl = iframeUrl.includes('?') 
+          ? `${iframeUrl}&autoplay=1&mute=1` 
+          : `${iframeUrl}?autoplay=1&mute=1`
+      } else if (iframeUrl.includes('vimeo.com')) {
+        iframeUrl = iframeUrl.includes('?') 
+          ? `${iframeUrl}&autoplay=1` 
+          : `${iframeUrl}?autoplay=1`
+      }
     }
 
     return (
       <div className="relative w-full aspect-video rounded-lg overflow-hidden bg-black">
+        {iframeError && (
+          <div className="absolute top-4 left-4 right-4 z-50 bg-yellow-500/90 text-black px-4 py-3 rounded-lg flex items-center gap-2 text-sm">
+            <AlertCircle className="w-5 h-5 flex-shrink-0" />
+            <span>
+              {useProxy 
+                ? 'Video blocked. Redirecting to external site...' 
+                : 'Video blocked. Trying alternative method...'}
+            </span>
+          </div>
+        )}
         <iframe
           src={iframeUrl}
           className="w-full h-full border-0"
           allowFullScreen
           allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
           title={title || 'Video player'}
+          onError={handleIframeError}
         />
       </div>
     )
