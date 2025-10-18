@@ -35,18 +35,54 @@ export async function generateMetadata({ params }) {
   const canonicalBase = process.env.NEXT_PUBLIC_SITE_URL || 'https://hexmy.com'
   const titleSlug = slugify(title)
   const canonical = `${canonicalBase}/video/${id}${titleSlug ? `-${titleSlug}` : ''}`
+  const imageUrl = video?.imageUrl || `${canonicalBase}/og-image.jpg`
+
+  // Generate comprehensive keywords
+  const keywords = [
+    ...(Array.isArray(video?.tags) ? video.tags : []),
+    ...(Array.isArray(video?.name) ? video.name : []),
+    'hexmy', 'premium video', 'adult entertainment'
+  ].filter(Boolean).join(', ')
 
   return {
     title,
     description,
+    keywords,
     alternates: { canonical },
     openGraph: {
       title,
       description,
       url: canonical,
+      siteName: 'Hexmy',
       type: 'video.other',
-      images: video?.imageUrl ? [{ url: video.imageUrl }] : undefined,
+      locale: 'en_US',
+      images: [
+        {
+          url: imageUrl,
+          width: 1200,
+          height: 630,
+          alt: title,
+        }
+      ],
+      videos: video?.iframeUrl ? [
+        {
+          url: video.iframeUrl,
+          width: 1280,
+          height: 720,
+        }
+      ] : undefined,
     },
+    twitter: {
+      card: 'summary_large_image',
+      title,
+      description,
+      images: [imageUrl],
+      creator: '@hexmy',
+    },
+    other: {
+      'video:duration': video?.minutes ? `${video.minutes * 60}` : undefined,
+      'video:release_date': video?.createdAt || undefined,
+    }
   }
 }
 
