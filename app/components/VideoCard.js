@@ -3,12 +3,18 @@
 import { useState } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
-import { Play, Clock, Eye, Heart, Star } from 'lucide-react'
+import { Play, Clock, Eye, Star } from 'lucide-react'
 import { api } from '../lib/api'
 
 export default function VideoCard({ video, priority = false }) {
   const [imageError, setImageError] = useState(false)
   const [imageLoaded, setImageLoaded] = useState(false)
+  
+  // Get video number with multiple fallbacks
+  const getVideoNumber = () => {
+    return video.dynamicVideoNo || video.videoNo || null;
+  }
+  
 
   // Format view count
   const formatViews = (views) => {
@@ -18,17 +24,23 @@ export default function VideoCard({ video, priority = false }) {
     return views.toString()
   }
 
-  // Format duration
+  // Format duration with random seconds
   const formatDuration = (minutes) => {
     if (!minutes) return '0:00'
     const mins = parseInt(minutes)
     const hours = Math.floor(mins / 60)
     const remainingMins = mins % 60
     
+    // Generate random seconds (0-59) based on video ID for consistency
+    const videoId = video._id || video.id || '0'
+    const seed = videoId.slice(-2) // Use last 2 characters of ID as seed
+    const randomSeconds = parseInt(seed, 16) % 60 // Convert to number and get 0-59
+    const formattedSeconds = randomSeconds.toString().padStart(2, '0')
+    
     if (hours > 0) {
-      return `${hours}:${remainingMins.toString().padStart(2, '0')}`
+      return `${hours}:${remainingMins.toString().padStart(2, '0')}:${formattedSeconds}`
     }
-    return `${mins}:00`
+    return `${mins}:${formattedSeconds}`
   }
 
   // Build URL segment: {id}-{title-slug}
@@ -133,6 +145,7 @@ export default function VideoCard({ video, priority = false }) {
             </div>
           )}
 
+
           {/* Quality Badge */}
           <div className="absolute top-2 left-2 bg-purple-600 text-white text-xs px-2 py-1 rounded font-semibold">
             HD
@@ -197,11 +210,12 @@ export default function VideoCard({ video, priority = false }) {
             )}
           </div>
           
-          {/* Like Button */}
-          <button className="flex items-center space-x-1 hover:text-red-400 transition-colors duration-200">
-            <Heart size={12} />
-            <span>Like</span>
-          </button>
+          {/* Video Code - Right Side */}
+          {getVideoNumber() && (
+            <div className="flex items-center space-x-1">
+              <span className="text-blue-400 font-semibold">Video code #{getVideoNumber()}</span>
+            </div>
+          )}
         </div>
       </div>
     </div>
