@@ -3,6 +3,7 @@ import Link from 'next/link'
 import VideoRedirect from '../../components/VideoRedirect'
 import VideoCard from '../../components/VideoCard'
 import Pagination from '../../components/Pagination'
+import VideoDescription from '../../components/VideoDescription'
 
 export const revalidate = 60
 
@@ -567,10 +568,7 @@ export default async function VideoDetailPage({ params, searchParams }) {
           )}
 
           {/* Enhanced Description Section with Unique Content - 500+ words */}
-          <div className="mt-8 rounded-2xl border border-white/10 bg-gradient-to-b from-white/5 to-transparent p-5">
-            <h2 className="text-lg font-semibold mb-3">
-              {['Video Overview', 'About This Scene', 'Content Description', 'What to Expect', 'Scene Details'][contentVariant]}
-            </h2>
+          <VideoDescription title={['Video Overview', 'About This Scene', 'Content Description', 'What to Expect', 'Scene Details'][contentVariant]}>
             {video.desc ? (
               <div className="text-gray-300 leading-relaxed space-y-3">
                 <p>{video.desc}</p>
@@ -705,7 +703,7 @@ export default async function VideoDetailPage({ params, searchParams }) {
                 </p>
               </div>
             )}
-          </div>
+          </VideoDescription>
           
           {/* Additional Content for SEO - Collapsible for better UX */}
           <div className="mt-6">
