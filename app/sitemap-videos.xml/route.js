@@ -6,7 +6,7 @@ export const revalidate = 3600
 const slugify = (s = '') => String(s).toLowerCase().trim().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '')
 
 export async function GET(req) {
-  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://hexmy.com'
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://freshprn.com'
   const currentDate = new Date().toISOString().split('T')[0]
 
   const url = req?.nextUrl

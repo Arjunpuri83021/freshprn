@@ -2,7 +2,7 @@ import Link from 'next/link'
 
 export const metadata = {
   title: 'Categories',
-  description: 'Browse video categories on Hexmy.',
+  description: 'Browse video categories on FreshPrn.',
   alternates: { canonical: '/categories' },
 }
 

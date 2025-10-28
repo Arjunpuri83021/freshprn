@@ -5,13 +5,31 @@ import Pagination from '../components/Pagination'
 export const revalidate = 60
 
 export const metadata = {
-  title: 'Hexmy Desi49 SxyPrn & BF Sex Videos | IndianGaySite & Hexmy on Hexmy',
-  description: 'desi 52 com desi 49 com dehati sex dasi sex blueflim boyfriendtv com bollywood sex bf sexy indiangaysite sxyprn bf hindi video bf hindi movie banglaxx | Hexmy',
+  title: 'FreshPrn Desi49 SxyPrn & BF Sex Videos | IndianGaySite on FreshPrn',
+  description: 'desi 52 com desi 49 com dehati sex dasi sex blueflim boyfriendtv com bollywood sex bf sexy indiangaysite sxyprn bf hindi video bf hindi movie banglaxx | FreshPrn',
   alternates: { canonical: '/indian' },
 }
 
 // Generate unique content from videos and meta keywords
 function generateIndianContent(videos, totalRecords, totalPages) {
+  // Brand-salted variant to differentiate FreshPrn output
+  const brandSalt = 'FreshPrn'.split('').reduce((acc, ch) => acc + ch.charCodeAt(0), 0)
+  const seed = 'indian'.split('').reduce((acc, ch) => acc + ch.charCodeAt(0), 0)
+  const variant = (seed + brandSalt) % 5
+  const prefaces = [
+    'FreshPrn editors curate Indian content for clarity and speed.',
+    'On FreshPrn, Indian is organized with clean UX and fast load.',
+    'This FreshPrn Indian shelf balances variety with lightweight design.',
+    'FreshPrn prioritizes smooth playback and clutter‑free layout here.',
+    'Our Indian collection is tuned for quick discovery on FreshPrn.'
+  ]
+  const streamingPhrases = [
+    'Enjoy uninterrupted HD streaming on any device.',
+    'Playback starts fast with minimal buffering.',
+    'Adaptive streams keep viewing smooth.',
+    'Mobile‑first performance for fluid scrubbing.',
+    'Clear visuals on efficient, lightweight pages.'
+  ]
   // Extract video titles
   const videoTitles = videos.slice(0, 5).map(v => v.titel || v.title).filter(Boolean)
   
@@ -42,11 +60,16 @@ function generateIndianContent(videos, totalRecords, totalPages) {
     exampleMention = ` Current page includes videos like "${firstTitle}" among others.`
   }
   
-  return {
+  const base = {
     intro: `Explore ${totalRecords}+ Indian desi videos featuring authentic South Asian content in high definition. This collection celebrates Indian performers across various scenarios, from traditional desi settings to modern productions. Our Indian category showcases the diversity and sensuality of the subcontinent with content ranging from amateur homemade recordings to professional studio productions.`,
     details: `The Indian video library encompasses desi performers in solo, duo, and group scenarios. Content includes Bollywood-inspired productions, village-themed dehati content, and urban Indian scenarios.${metaMention}${titleMention} Videos maintain cultural authenticity while delivering quality entertainment with proper production values.`,
     navigation: `Browse through ${totalPages} pages of Indian content, with 16 videos per page organized for easy exploration. The collection is regularly updated with new desi releases, balancing popular Indian favorites with fresh content.${exampleMention}`,
     closing: `All Indian videos stream free in HD quality without registration requirements. Content is optimized for desktop and mobile viewing with adaptive playback, ensuring smooth streaming of desi content across all devices and connection speeds worldwide.`
+  }
+  return {
+    ...base,
+    intro: `${prefaces[variant]} ${base.intro}`,
+    closing: `${base.closing} ${streamingPhrases[variant]}`
   }
 }
 

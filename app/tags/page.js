@@ -4,8 +4,8 @@ import { api } from '../lib/api'
 export const revalidate = 300
 
 export const metadata = {
-  title: 'Best All Porn Tags - Browse by Category | Hexmy',
-  description: 'Browse all porn video tags and categories on Hexmy. Find your favorite adult content by tag - organized alphabetically for easy navigation.',
+  title: 'Best All Porn Tags - Browse by Category | FreshPrn',
+  description: 'Browse all porn video tags and categories on FreshPrn. Find your favorite adult content by tag - organized alphabetically for easy navigation.',
   alternates: { canonical: '/tags' },
 }
 

@@ -8,43 +8,43 @@ const inter = Inter({ subsets: ['latin'] })
 
 export const metadata = {
   title: {
-    default: 'Hexmy - Premium Adult Entertainment Videos',
-    template: '%s | Hexmy'
+    default: 'FreshPrn - Free HD Adult Videos',
+    template: '%s | FreshPrn'
   },
-  description: 'Watch premium adult entertainment videos featuring top stars and categories. High quality content updated daily.',
-  keywords: 'adult videos, premium content, entertainment, streaming',
-  authors: [{ name: 'Hexmy' }],
-  creator: 'Hexmy',
-  publisher: 'Hexmy',
+  description: 'Stream free HD adult videos featuring trending categories and top stars. Fresh content added daily for a fast, clean experience.',
+  keywords: 'free porn, hd porn videos, adult videos, streaming',
+  authors: [{ name: 'FreshPrn' }],
+  creator: 'FreshPrn',
+  publisher: 'FreshPrn',
   formatDetection: {
     email: false,
     address: false,
     telephone: false,
   },
-  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || 'https://hexmy.com'),
+  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || 'https://freshprn.com'),
   alternates: {
     canonical: '/',
   },
   openGraph: {
     type: 'website',
     locale: 'en_US',
-    url: process.env.NEXT_PUBLIC_SITE_URL || 'https://hexmy.com',
-    siteName: 'Hexmy',
-    title: 'Hexmy - Premium Adult Entertainment Videos',
-    description: 'Watch premium adult entertainment videos featuring top stars and categories. High quality content updated daily.',
+    url: process.env.NEXT_PUBLIC_SITE_URL || 'https://freshprn.com',
+    siteName: 'FreshPrn',
+    title: 'FreshPrn - Free HD Adult Videos',
+    description: 'Stream free HD adult videos featuring trending categories and top stars. Fresh content added daily.',
     images: [
       {
         url: '/og-image.jpg',
         width: 1200,
         height: 630,
-        alt: 'Hexmy - Premium Adult Entertainment',
+        alt: 'FreshPrn - Free HD Adult Videos',
       },
     ],
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Hexmy - Premium Adult Entertainment Videos',
-    description: 'Watch premium adult entertainment videos featuring top stars and categories. High quality content updated daily.',
+    title: 'FreshPrn - Free HD Adult Videos',
+    description: 'Stream free HD adult videos featuring trending categories and top stars. Fresh content added daily.',
     images: ['/og-image.jpg'],
   },
   robots: {
@@ -116,12 +116,12 @@ export default function RootLayout({ children }) {
             __html: JSON.stringify({
               "@context": "https://schema.org",
               "@type": "WebSite",
-              "name": "Hexmy",
-              "url": process.env.NEXT_PUBLIC_SITE_URL || "https://hexmy.com",
-              "description": "Premium adult entertainment videos featuring top stars and categories",
+              "name": "FreshPrn",
+              "url": process.env.NEXT_PUBLIC_SITE_URL || "https://freshprn.com",
+              "description": "Free HD adult videos with trending categories and top stars",
               "potentialAction": {
                 "@type": "SearchAction",
-                "target": `${process.env.NEXT_PUBLIC_SITE_URL || "https://hexmy.com"}/search?q={search_term_string}`,
+                "target": `${process.env.NEXT_PUBLIC_SITE_URL || "https://freshprn.com"}/search?q={search_term_string}`,
                 "query-input": "required name=search_term_string"
               }
             })

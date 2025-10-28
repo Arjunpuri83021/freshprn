@@ -8,10 +8,10 @@ export async function generateMetadata({ params, searchParams }) {
   const name = decodeURIComponent(params.name)
   const page = Number(searchParams?.page || 1)
   const displayName = name.replace(/-/g, ' ')
-  const title = `hexmy - ${displayName} xvids porno missax trisha paytas porn`
+  const title = `FreshPrn - ${displayName} xvids porno missax trisha paytas porn`
   const description = `sexy movie super movie ${displayName}. chinese family sex huge tits Porn Videos big natural boobs download vporn sex videos`
 
-  const canonicalBase = process.env.NEXT_PUBLIC_SITE_URL || 'https://hexmy.com'
+  const canonicalBase = process.env.NEXT_PUBLIC_SITE_URL || 'https://freshprn.com'
   const canonical = `${canonicalBase}/pornstar/${params.name}`
 
   return {
@@ -61,9 +61,10 @@ function generatePerformerContent(name, totalRecords, totalPages, videos) {
     return words.filter(w => w.length > 3 && !skipWords.includes(w)).slice(0, 3)
   }).flat().filter((v, i, a) => a.indexOf(v) === i).slice(0, 5)
   
-  // Generate seed for consistent variation
+  // Generate seed for consistent variation (salted by brand to differ from other sites)
   const seed = name.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0)
-  const variant = seed % 5
+  const brandSalt = 'FreshPrn'.split('').reduce((acc, ch) => acc + ch.charCodeAt(0), 0)
+  const variant = (seed + brandSalt) % 5
   
   const getIntro = () => {
     // Fixed view text calculation

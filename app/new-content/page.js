@@ -5,8 +5,8 @@ import Pagination from '../components/Pagination'
 export const revalidate = 60
 
 export const metadata = {
-  title: 'Hexmy fsiblog df6 org df6org dinotube draftsex drtuber fsiblog com |',
-  description: 'gekso fsiblog com fsiblog fry99 com english bf video elephant tube bad wap beeg hindi draftsex dinotube df6 org tiktits 3gp king icegay xxxhd sex18 imo sex | Hexmy',
+  title: 'FreshPrn fsiblog df6 org df6org dinotube draftsex drtuber fsiblog com |',
+  description: 'gekso fsiblog com fsiblog fry99 com english bf video elephant tube bad wap beeg hindi draftsex dinotube df6 org tiktits 3gp king icegay xxxhd sex18 imo sex | FreshPrn',
   alternates: { canonical: '/new-content' },
 }
 

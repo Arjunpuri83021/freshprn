@@ -3,7 +3,7 @@ import { NextResponse } from 'next/server'
 export const revalidate = 3600
 
 export async function GET() {
-  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://hexmy.com'
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://freshprn.com'
   const currentDate = new Date().toISOString().split('T')[0]
 
   const sitemapIndex = `<?xml version="1.0" encoding="UTF-8"?>

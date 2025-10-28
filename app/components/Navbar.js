@@ -2,7 +2,9 @@
 
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
-import { useRouter } from 'next/navigation'
+import Logo from './Logo'
+import { useRouter, usePathname } from 'next/navigation'
+
 import { Search, Menu, X, Home, Star, Film, TrendingUp, Clock, Heart, Flame } from 'lucide-react'
 
 export default function Navbar() {
@@ -19,9 +21,9 @@ export default function Navbar() {
     { name: 'Home', href: '/', icon: Home },
     { name: 'Stars', href: '/pornstars', icon: Star },
     { name: 'Indian', href: '/indian', icon: Film },
-    { name: 'Hijabi', href: '/muslim', icon: Film },
-    { name: 'New Videos', href: '/new-content', icon: Clock },
-    { name: 'Popular', href: '/most-liked', icon: TrendingUp },
+    { name: 'Hijabi', href: '/hijabi', icon: Film },
+    { name: 'New Videos', href: '/new-videos', icon: Clock },
+    { name: 'Popular', href: '/top-videos', icon: TrendingUp },
     { name: 'Categories', href: '/tags', icon: Film },
   ]
 
@@ -128,27 +130,25 @@ export default function Navbar() {
     setIsMobileSearchOpen(false)
   }
 
+  const pathname = usePathname()
+
   return (
-    <nav className="bg-gray-900 text-white shadow-lg sticky top-0 z-50">
+    <nav className="sticky top-0 z-50 text-white bg-gray-900 border-b border-gray-800">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
-          <Link href="/" className="flex items-center space-x-2">
-            <div className="w-8 h-8 bg-gradient-to-r from-purple-500 to-pink-500 rounded-lg flex items-center justify-center">
-              <span className="text-white font-bold text-lg">H</span>
-            </div>
-            <span className="text-xl font-bold text-gradient">Hexmy</span>
-          </Link>
+          <Logo size="md" />
 
           {/* Desktop Navigation */}
-          <div className="hidden md:flex items-center space-x-8">
+          <div className="hidden md:flex items-center space-x-6">
             {navigationItems.map((item) => {
               const Icon = item.icon
+              const isActive = pathname === item.href || (item.href !== '/' && pathname?.startsWith(item.href))
               return (
                 <Link
                   key={item.name}
                   href={item.href}
-                  className="flex items-center space-x-1 hover:text-purple-400 transition-colors duration-200"
+                  className={`flex items-center space-x-1 px-1.5 py-1 ${isActive ? 'text-white border-b-2 border-sky-500' : 'text-gray-300 hover:text-white hover:border-sky-400'} transition-colors`}
                 >
                   <Icon size={16} />
                   <span>{item.name}</span>
@@ -167,7 +167,7 @@ export default function Navbar() {
                 onChange={(e) => setSearchQuery(e.target.value)}
                 onFocus={() => searchSuggestions.length > 0 && setShowSuggestions(true)}
                 onBlur={() => setTimeout(() => setShowSuggestions(false), 200)}
-                className="w-64 px-4 py-2 pl-10 bg-gray-800 border border-gray-700 rounded-lg focus:outline-none focus:border-purple-500 transition-colors duration-200"
+                className="w-64 px-4 py-2 pl-10 bg-gray-800 border border-gray-700 rounded-lg focus:outline-none focus:border-sky-500 placeholder:text-gray-400 transition-colors duration-200"
               />
               <Search className="absolute left-3 top-2.5 text-gray-400" size={16} />
               
@@ -199,7 +199,7 @@ export default function Navbar() {
             </button>
             <button
               onClick={() => setIsMenuOpen(!isMenuOpen)}
-              className="p-2 rounded-lg hover:bg-gray-800 transition-colors duration-200"
+              className="p-2 rounded-lg hover:bg-white/5 transition-colors duration-200"
               aria-label="Toggle menu"
             >
               {isMenuOpen ? <X size={24} /> : <Menu size={24} />}
@@ -209,7 +209,7 @@ export default function Navbar() {
 
         {/* Mobile Navigation */}
         {isMenuOpen && (
-          <div className="md:hidden py-4 border-t border-gray-700">
+          <div className="md:hidden py-4 border-t border-gray-800">
             {/* Mobile Search */}
             <form onSubmit={handleSearch} className="mb-4">
               <div className="relative">
@@ -218,7 +218,7 @@ export default function Navbar() {
                   placeholder="Search videos, stars..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  className="w-full px-4 py-2 pl-10 bg-gray-800 border border-gray-700 rounded-lg focus:outline-none focus:border-purple-500"
+                  className="w-full px-4 py-2 pl-10 bg-gray-800 border border-gray-700 rounded-lg focus:outline-none focus:border-sky-500"
                 />
                 <Search className="absolute left-3 top-2.5 text-gray-400" size={16} />
               </div>
@@ -250,7 +250,7 @@ export default function Navbar() {
                       key={category.name}
                       href={category.href}
                       onClick={() => setIsMenuOpen(false)}
-                      className="block py-1 hover:text-purple-400 transition-colors duration-200"
+                      className="block py-1 hover:text-white transition-colors duration-200"
                     >
                       {category.name}
                     </Link>
@@ -277,7 +277,7 @@ export default function Navbar() {
                     onChange={(e) => setSearchQuery(e.target.value)}
                     onFocus={() => searchSuggestions.length > 0 && setShowSuggestions(true)}
                     onBlur={() => setTimeout(() => setShowSuggestions(false), 200)}
-                    className="w-full px-4 py-2 pl-10 bg-gray-800 border border-gray-700 rounded-lg focus:outline-none focus:border-purple-500"
+                    className="w-full px-4 py-2 pl-10 bg-white/5 border border-white/10 rounded-lg focus:outline-none focus:border-sky-500"
                   />
                   <Search className="absolute left-3 top-2.5 text-gray-400" size={16} />
                 </form>

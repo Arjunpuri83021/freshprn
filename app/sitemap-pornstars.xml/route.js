@@ -4,7 +4,7 @@ import { api } from '../lib/api'
 export const revalidate = 3600
 
 export async function GET() {
-  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://hexmy.com'
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://freshprn.com'
   const currentDate = new Date().toISOString().split('T')[0]
 
   // Fetch all pornstars (robust to various API response shapes)

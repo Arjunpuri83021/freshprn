@@ -21,14 +21,14 @@ export async function generateMetadata({ params, searchParams }) {
 
   const baseTitle = `${titleTag} Porn Videos`
   const title = page > 1
-    ? `${baseTitle} – Page ${page} | Hexmy`
-    : `${baseTitle} – Free ${titleTag} Sex in HD | Hexmy`
+    ? `${baseTitle} – Page ${page} | FreshPrn`
+    : `${baseTitle} – Free ${titleTag} Sex in HD | FreshPrn`
 
   const description = page > 1
-    ? `Browse page ${page}${totalPages ? ` of ${totalPages}` : ''} for the best ${titleTag} porn videos in HD on Hexmy. Free streaming, updated daily.${totalRecords ? ` ${totalRecords}+ videos available.` : ''}`
-    : `Watch the best ${titleTag} porn videos in HD on Hexmy. Free streaming, updated daily.${totalRecords ? ` ${totalRecords}+ videos available.` : ''}`
+    ? `Browse page ${page}${totalPages ? ` of ${totalPages}` : ''} for the best ${titleTag} porn videos in HD on FreshPrn. Free streaming, updated daily.${totalRecords ? ` ${totalRecords}+ videos available.` : ''}`
+    : `Watch the best ${titleTag} porn videos in HD on FreshPrn. Free streaming, updated daily.${totalRecords ? ` ${totalRecords}+ videos available.` : ''}`
 
-  const canonicalBase = process.env.NEXT_PUBLIC_SITE_URL || 'https://hexmy.com'
+  const canonicalBase = process.env.NEXT_PUBLIC_SITE_URL || 'https://freshprn.com'
   const canonical = page > 1
     ? `${canonicalBase}/tag/${params.tag}/${page}`
     : `${canonicalBase}/tag/${params.tag}`
@@ -39,7 +39,7 @@ export async function generateMetadata({ params, searchParams }) {
     alternates: { canonical },
     keywords: [
       `${titleTag} porn`, `${titleTag} sex videos`, `${titleTag} hd`, `${titleTag} xxx`,
-      'hexmy', 'free porn', 'hd porn videos'
+      'freshprn', 'free porn', 'hd porn videos'
     ],
     robots: {
       index: true,
@@ -98,9 +98,10 @@ function generateTagContent(tag, totalRecords, totalPages, page, videos) {
     return words.filter(w => w.length > 3 && !skipWords.includes(w)).slice(0, 3)
   }).flat().filter((v, i, a) => a.indexOf(v) === i).slice(0, 5)
   
-  // Generate seed for consistent variation
+  // Generate seed for consistent variation (salted by brand to differ from other sites)
   const seed = tag.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0)
-  const variant = seed % 5
+  const brandSalt = 'FreshPrn'.split('').reduce((acc, ch) => acc + ch.charCodeAt(0), 0)
+  const variant = (seed + brandSalt) % 5
   
   // Tag-specific content patterns
   const getIntro = () => {

@@ -48,68 +48,68 @@ const categorySearch = {
 // Legacy-like meta templates per category
 const categoryMeta = {
   'badwap': {
-    title: (page) => `Hexmy badwap Videos page ${page} - badwap xvedeo`,
-    desc: 'Explore a collection of premium badwap videos on Hexmy. Enjoy handpicked, high-quality content filtered for your preferences.',
+    title: (page) => `FreshPrn badwap Videos page ${page} - badwap xvedeo`,
+    desc: 'Explore a collection of premium badwap videos on FreshPrn. Enjoy handpicked, high-quality content filtered for your preferences.',
   },
   'blueflim': {
-    title: (page) => `Hexmy Blueflim Videos Page ${page} – Watch HD videos online`,
-    desc: 'Explore a collection of premium Blueflim videos on Hexmy. Enjoy handpicked, high-quality content filtered for your preferences.',
+    title: (page) => `FreshPrn Blueflim Videos Page ${page} – Watch HD videos online`,
+    desc: 'Explore a collection of premium Blueflim videos on FreshPrn. Enjoy handpicked, high-quality content filtered for your preferences.',
   },
   'scout69': {
-    title: (page) => `Hexmy Scout69 Videos page ${page} - bad wap wwwxxx xvedeo`,
-    desc: 'Explore a collection of premium Scout69 Big boobs big dick videos on Hexmy. Enjoy handpicked, high-quality content filtered for your preferences.',
+    title: (page) => `FreshPrn Scout69 Videos page ${page} - bad wap wwwxxx xvedeo`,
+    desc: 'Explore a collection of premium Scout69 Big boobs big dick videos on FreshPrn. Enjoy handpicked, high-quality content filtered for your preferences.',
   },
   'lesbify': {
-    title: (page) => `Hexmy Lesbify Videos page ${page} - xxxhd,wwwsexcom videos`,
-    desc: 'Explore a collection of premium lesbian videos on Hexmy. Enjoy handpicked, high-quality content filtered for your preferences.',
+    title: (page) => `FreshPrn Lesbify Videos page ${page} - xxxhd,wwwsexcom videos`,
+    desc: 'Explore a collection of premium lesbian videos on FreshPrn. Enjoy handpicked, high-quality content filtered for your preferences.',
   },
   'famili-sex-com': {
-    title: (page) => `Hexmy famili sex com page ${page} - step family xvedeo`,
-    desc: 'Explore a collection of premium famili sex com videos on Hexmy. Enjoy handpicked, high-quality content filtered for your preferences.',
+    title: (page) => `FreshPrn famili sex com page ${page} - step family xvedeo`,
+    desc: 'Explore a collection of premium famili sex com videos on FreshPrn. Enjoy handpicked, high-quality content filtered for your preferences.',
   },
   'boobs-pressing': {
-    title: (page) => `Hexmy Boobs Pressing page ${page} Videos – Watch HD clips now`,
-    desc: 'Explore a collection of premium boobs pressing videos on Hexmy. Enjoy handpicked, high-quality content filtered for your preferences.',
+    title: (page) => `FreshPrn Boobs Pressing page ${page} Videos – Watch HD clips now`,
+    desc: 'Explore a collection of premium boobs pressing videos on FreshPrn. Enjoy handpicked, high-quality content filtered for your preferences.',
   },
   'small-tits': {
-    title: (page) => `Hexmy Small Tits sex Videos page ${page} - 4K Pornstar 3pornstar`,
+    title: (page) => `FreshPrn Small Tits sex Videos page ${page} - 4K Pornstar 3pornstar`,
     desc: 'Explore a collection of premium SmallTits videos. Enjoy handpicked, high-quality content filtered for your preferences.',
   },
   'sex18': {
-    title: (page) => `Hexmy sex18 Videos page ${page} - xxxhd,wwwsexcom videos`,
-    desc: 'Explore a collection of premium sex18 videos on Hexmy. Enjoy handpicked, high-quality content filtered for your preferences.',
+    title: (page) => `FreshPrn sex18 Videos page ${page} - xxxhd,wwwsexcom videos`,
+    desc: 'Explore a collection of premium sex18 videos on FreshPrn. Enjoy handpicked, high-quality content filtered for your preferences.',
   },
   'desi49': {
-    title: (page) => `Hexmy Desi49 Sex Videos page ${page} – Watch hot desi clips in HD`,
-    desc: 'Explore a collection of premium desi49 videos on Hexmy. Enjoy handpicked, high-quality content filtered for your preferences.',
+    title: (page) => `FreshPrn Desi49 Sex Videos page ${page} – Watch hot desi clips in HD`,
+    desc: 'Explore a collection of premium desi49 videos on FreshPrn. Enjoy handpicked, high-quality content filtered for your preferences.',
   },
   'dehati-sex': {
-    title: (page) => `Hexmy Dehati Videos page ${page} – Watch rural desi clips in HD`,
+    title: (page) => `FreshPrn Dehati Videos page ${page} – Watch rural desi clips in HD`,
     desc: 'Explore a collection of premium Milf videos on Dehati. Enjoy handpicked, high-quality content filtered for your preferences.',
   },
   'chochox': {
-    title: (page) => `Hexmy chochox Videos page ${page} – Watch Cartoon porn clips in HD`,
-    desc: 'Explore a collection of premium chochox videos on Hexmy. Enjoy handpicked, high-quality content filtered for your preferences.',
+    title: (page) => `FreshPrn chochox Videos page ${page} – Watch Cartoon porn clips in HD`,
+    desc: 'Explore a collection of premium chochox videos on FreshPrn. Enjoy handpicked, high-quality content filtered for your preferences.',
   },
   'comxxx': {
-    title: (page) => `Hexmy comxxx Videos Page ${page} – Watch HD videos online`,
-    desc: 'Explore a collection of premium comxxx videos on Hexmy. Enjoy handpicked, high-quality content filtered for your preferences.',
+    title: (page) => `FreshPrn comxxx Videos Page ${page} – Watch HD videos online`,
+    desc: 'Explore a collection of premium comxxx videos on FreshPrn. Enjoy handpicked, high-quality content filtered for your preferences.',
   },
   'milfnut': {
-    title: (page) => `Hexmy MilfNut Videos page ${page} - milf300 wwwxxx`,
-    desc: 'Explore a collection of premium MilfNut videos on Hexmy. Enjoy handpicked, high-quality content filtered for your preferences.',
+    title: (page) => `FreshPrn MilfNut Videos page ${page} - milf300 wwwxxx`,
+    desc: 'Explore a collection of premium MilfNut videos on FreshPrn. Enjoy handpicked, high-quality content filtered for your preferences.',
   },
   'fullporner': {
-    title: (page) => `Hexmy fullporner Videos page ${page} - bad wap wwwxxx xvedeo`,
-    desc: 'Explore a collection of premium fullporner Big boobs big dick videos on Hexmy. Enjoy handpicked, high-quality content filtered for your preferences.',
+    title: (page) => `FreshPrn fullporner Videos page ${page} - bad wap wwwxxx xvedeo`,
+    desc: 'Explore a collection of premium fullporner Big boobs big dick videos on FreshPrn. Enjoy handpicked, high-quality content filtered for your preferences.',
   },
   'aunt-sex': {
-    title: (page) => `Hexmy Aunt Sex Videos page ${page} - milf300 wwwxxx`,
-    desc: 'Explore a collection of premium Aunt Sex videos on Hexmy. Enjoy handpicked, high-quality content filtered for your preferences.',
+    title: (page) => `FreshPrn Aunt Sex Videos page ${page} - milf300 wwwxxx`,
+    desc: 'Explore a collection of premium Aunt Sex videos on FreshPrn. Enjoy handpicked, high-quality content filtered for your preferences.',
   },
   'teen-sex': {
-    title: (page) => `Hexmy Teen Sex Videos page ${page}`,
-    desc: 'Explore a collection of premium Teen sex videos on Hexmy. Enjoy handpicked, high-quality content filtered for your preferences.',
+    title: (page) => `FreshPrn Teen Sex Videos page ${page}`,
+    desc: 'Explore a collection of premium Teen sex videos on FreshPrn. Enjoy handpicked, high-quality content filtered for your preferences.',
   },
 }
 
@@ -119,8 +119,8 @@ export async function generateMetadata({ params, searchParams }) {
   const titleBase = categoryTitles[slug] || slug.replace(/-/g, ' ')
   const meta = categoryMeta[slug]
   const title = meta ? meta.title(page) : (page > 1 ? `${titleBase} Videos - Page ${page}` : `${titleBase} Videos`)
-  const description = meta ? meta.desc : `Watch ${titleBase} videos on Hexmy${page > 1 ? ` - Page ${page}` : ''}.`
-  const canonicalBase = process.env.NEXT_PUBLIC_SITE_URL || 'https://hexmy.com'
+  const description = meta ? meta.desc : `Watch ${titleBase} videos on FreshPrn${page > 1 ? ` - Page ${page}` : ''}.`
+  const canonicalBase = process.env.NEXT_PUBLIC_SITE_URL || 'https://freshprn.com'
   const canonical = page > 1 ? `${canonicalBase}/category/${slug}/${page}` : `${canonicalBase}/category/${slug}`
   return {
     title,
@@ -131,6 +131,24 @@ export async function generateMetadata({ params, searchParams }) {
 
 // Generate unique static content for each category
 function getCategoryContent(slug, titleBase, totalRecords, totalPages) {
+  // Brand-salted variant so FreshPrn output differs from similar templates
+  const brandSalt = 'FreshPrn'.split('').reduce((acc, ch) => acc + ch.charCodeAt(0), 0)
+  const seed = String(slug).split('').reduce((acc, ch) => acc + ch.charCodeAt(0), 0)
+  const variant = (seed + brandSalt) % 5
+  const prefaces = [
+    `FreshPrn editors curate this section for clarity and speed — tailored for ${titleBase}.`,
+    `On FreshPrn, ${titleBase} is organized with clean UX and fast load so you get to playback quicker.`,
+    `This FreshPrn ${titleBase} collection balances variety with a lightweight design for quick browsing.`,
+    `FreshPrn prioritizes smooth playback and a clutter‑free layout across the ${titleBase} catalog.`,
+    `Our ${titleBase} shelf on FreshPrn is tuned for discovery with crisp categories and swift navigation.`
+  ]
+  const streamingPhrases = [
+    'Enjoy uninterrupted HD streaming on any device.',
+    'Playback is optimized for quick start and minimal buffering.',
+    'Streams adapt to your connection for smooth viewing.',
+    'Mobile‑first performance delivers fast starts and fluid scrubbing.',
+    'Experience clear visuals with efficient, lightweight pages.'
+  ]
   const contentMap = {
     'badwap': {
       intro: `Explore ${totalRecords}+ Badwap videos featuring diverse content from various creators. This collection includes high-quality scenes with professional production values and authentic amateur contributions. Badwap content spans multiple genres and scenarios, offering viewers a comprehensive selection of entertainment options.`,
@@ -236,12 +254,16 @@ function getCategoryContent(slug, titleBase, totalRecords, totalPages) {
     },
   }
 
-  return contentMap[slug] || {
+  const base = contentMap[slug] || {
     intro: `Explore ${totalRecords}+ ${titleBase} videos in high definition. This collection features diverse content from various performers and studios, updated regularly with new releases. ${titleBase} videos span multiple scenarios and production styles, offering comprehensive viewing options.`,
     details: `Our ${titleBase} library encompasses both professional studio productions and select amateur contributions. Videos are organized by popularity and upload date, making content discovery straightforward. The collection features performers at various experience levels, ensuring variety across different preferences and interests.`,
     navigation: `Browse through ${totalPages} pages of ${titleBase} content, with 16 videos per page. The pagination system allows efficient exploration of the entire catalog. Videos are curated to maintain quality standards while offering diverse viewing options.`,
     closing: `All ${titleBase} videos stream free in HD quality without registration requirements. Content is optimized for desktop and mobile viewing, with adaptive playback ensuring smooth streaming across all devices.`
   }
+
+  const intro = `${prefaces[variant]} ${base.intro}`
+  const closing = `${base.closing} ${streamingPhrases[variant]}`
+  return { ...base, intro, closing }
 }
 
 export default async function CategoryPage({ params, searchParams }) {
@@ -253,6 +275,15 @@ export default async function CategoryPage({ params, searchParams }) {
   
   // Generate unique content for page 1
   const content = page === 1 ? getCategoryContent(slug, titleBase, data.totalRecords || 0, data.totalPages || 1) : null
+  
+  // Build small dynamic highlights from current page data (unique per page load)
+  const records = Array.isArray(data.records) ? data.records : []
+  const samplePerformers = [...new Set(records.flatMap(v => Array.isArray(v.name) ? v.name : []).filter(Boolean))]
+    .slice(0, 5)
+    .map(n => n.replace(/-/g, ' '))
+  const sampleTags = [...new Set(records.flatMap(v => Array.isArray(v.tags) ? v.tags : []).filter(Boolean))]
+    .slice(0, 6)
+    .map(t => t.replace(/-/g, ' '))
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
@@ -279,6 +310,17 @@ export default async function CategoryPage({ params, searchParams }) {
           <p>{content.details}</p>
           <p>{content.navigation}</p>
           <p>{content.closing}</p>
+          {(samplePerformers.length > 0 || sampleTags.length > 0) && (
+            <div className="mt-4 border-t border-white/10 pt-4">
+              <h3 className="text-lg font-semibold mb-2">Highlights on this page</h3>
+              {samplePerformers.length > 0 && (
+                <p className="text-sm text-gray-300"><span className="text-gray-400">Performers:</span> {samplePerformers.join(', ')}</p>
+              )}
+              {sampleTags.length > 0 && (
+                <p className="text-sm text-gray-300"><span className="text-gray-400">Popular tags:</span> {sampleTags.join(', ')}</p>
+              )}
+            </div>
+          )}
         </div>
       )}
     </div>

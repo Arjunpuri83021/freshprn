@@ -6,12 +6,30 @@ export const revalidate = 60
 
 export const metadata = {
   title: 'Hijabi Videos',
-  description: 'Watch Hijabi videos on Hexmy with high-quality streaming.',
+  description: 'Watch Hijabi videos on FreshPrn with high-quality streaming.',
   alternates: { canonical: '/hijabi' },
 }
 
 // Generate unique content from videos
 function generateHijabiContent(videos, totalRecords, totalPages) {
+  // Brand-salted variant to differentiate FreshPrn output
+  const brandSalt = 'FreshPrn'.split('').reduce((acc, ch) => acc + ch.charCodeAt(0), 0)
+  const seed = 'hijabi'.split('').reduce((acc, ch) => acc + ch.charCodeAt(0), 0)
+  const variant = (seed + brandSalt) % 5
+  const prefaces = [
+    'FreshPrn editors curate Hijabi content for clarity and speed.',
+    'On FreshPrn, Hijabi is organized with clean UX and fast load.',
+    'This FreshPrn Hijabi shelf balances variety with lightweight design.',
+    'FreshPrn prioritizes smooth playback and a clutter‑free layout here.',
+    'Our Hijabi collection is tuned for quick discovery on FreshPrn.'
+  ]
+  const streamingPhrases = [
+    'Enjoy uninterrupted HD streaming on any device.',
+    'Playback starts fast with minimal buffering.',
+    'Adaptive streams keep viewing smooth.',
+    'Mobile‑first performance for fluid scrubbing.',
+    'Clear visuals on efficient, lightweight pages.'
+  ]
   const videoTitles = videos.slice(0, 5).map(v => v.titel || v.title).filter(Boolean)
   
   const titleKeywords = videoTitles.map(title => {
@@ -31,11 +49,16 @@ function generateHijabiContent(videos, totalRecords, totalPages) {
     exampleMention = ` Current page includes videos like "${firstTitle}" among others.`
   }
   
-  return {
+  const base = {
     intro: `Explore ${totalRecords}+ Hijabi videos featuring Muslim women in traditional and modern settings. This collection celebrates modest beauty with performers wearing hijab and Islamic attire across various scenarios. Our Hijabi category showcases the unique appeal of covered beauty, from traditional modest settings to intimate private moments.`,
     details: `The Hijabi video library encompasses performers in traditional Islamic dress across solo, duo, and group scenarios. Content ranges from fully modest presentations to intimate private settings, respecting cultural context while delivering quality entertainment.${titleMention} Videos feature performers from various Muslim backgrounds with authentic cultural representation.`,
     navigation: `Browse through ${totalPages} pages of Hijabi content, with 16 videos per page organized for easy exploration. The collection is regularly updated with new releases featuring Muslim performers in hijab and traditional attire.${exampleMention}`,
     closing: `All Hijabi videos stream free in HD quality without registration requirements. Content is optimized for desktop and mobile viewing with adaptive playback, ensuring smooth streaming across all devices worldwide.`
+  }
+  return {
+    ...base,
+    intro: `${prefaces[variant]} ${base.intro}`,
+    closing: `${base.closing} ${streamingPhrases[variant]}`
   }
 }
 

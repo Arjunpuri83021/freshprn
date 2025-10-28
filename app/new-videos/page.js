@@ -6,12 +6,30 @@ export const revalidate = 60
 
 export const metadata = {
   title: 'New Videos',
-  description: 'Watch the latest new videos on Hexmy with high-quality streaming.',
+  description: 'Watch the latest new videos on FreshPrn with high-quality streaming.',
   alternates: { canonical: '/new-videos' },
 }
 
 // Generate unique content from videos
 function generateNewVideosContent(videos, totalRecords, totalPages) {
+  // Brand-salted variant to differentiate FreshPrn output
+  const brandSalt = 'FreshPrn'.split('').reduce((acc, ch) => acc + ch.charCodeAt(0), 0)
+  const seed = 'new-videos'.split('').reduce((acc, ch) => acc + ch.charCodeAt(0), 0)
+  const variant = (seed + brandSalt) % 5
+  const prefaces = [
+    'FreshPrn surfaces brand-new uploads with a clean, fast layout.',
+    'On FreshPrn, new videos load quickly with uncluttered design.',
+    'This FreshPrn feed is tuned for quick discovery and speed.',
+    'FreshPrn prioritizes instant playback for the latest releases.',
+    'Our new uploads page is optimized for smooth browsing on FreshPrn.'
+  ]
+  const streamingPhrases = [
+    'Enjoy uninterrupted HD streaming on any device.',
+    'Playback starts fast with minimal buffering.',
+    'Adaptive streams keep viewing smooth.',
+    'Mobile‑first performance for fluid scrubbing.',
+    'Clear visuals on efficient, lightweight pages.'
+  ]
   const videoTitles = videos.slice(0, 5).map(v => v.titel || v.title).filter(Boolean)
   
   const titleKeywords = videoTitles.map(title => {
@@ -31,11 +49,16 @@ function generateNewVideosContent(videos, totalRecords, totalPages) {
     exampleMention = ` Latest additions include videos like "${firstTitle}" among others.`
   }
   
-  return {
+  const base = {
     intro: `Explore ${totalRecords}+ newest videos uploaded to our platform in high definition. This collection features the latest releases across all categories, updated daily with fresh content from various performers and studios. Our New Videos section ensures you never miss the most recent additions to our extensive library.`,
     details: `The New Videos library showcases the latest uploads across multiple genres and categories. Content includes fresh releases from established performers, debut videos from new talent, and recent productions from various studios.${titleMention} Videos are sorted by upload date with the newest content appearing first, ensuring you always see the latest additions.`,
     navigation: `Browse through ${totalPages} pages of new content, with 16 videos per page organized chronologically. The collection updates daily with fresh uploads, making it easy to discover the latest releases across all categories and performers.${exampleMention}`,
     closing: `All new videos stream free in HD quality without registration requirements. Content is optimized for desktop and mobile viewing with adaptive playback, ensuring smooth streaming of the latest releases across all devices.`
+  }
+  return {
+    ...base,
+    intro: `${prefaces[variant]} ${base.intro}`,
+    closing: `${base.closing} ${streamingPhrases[variant]}`
   }
 }
 

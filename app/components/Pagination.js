@@ -40,7 +40,7 @@ export default function Pagination({ basePath = '/', currentPage = 1, totalPages
     <nav className="flex items-center justify-center gap-1 sm:gap-2 mt-8 flex-wrap px-2" aria-label="Pagination">
       <Link
         href={pageHref(Math.max(1, currentPage - 1))}
-        className={`px-2 sm:px-3.5 py-1.5 sm:py-2 rounded-md border text-xs sm:text-sm transition-colors whitespace-nowrap ${currentPage === 1 ? 'text-gray-500 border-gray-700 bg-gray-800/50 cursor-not-allowed pointer-events-none' : 'text-gray-100 border-gray-600 bg-gray-900 hover:border-purple-500 hover:text-white'}`}
+        className={`px-2 sm:px-3.5 py-1.5 sm:py-2 rounded-md border text-xs sm:text-sm transition-colors whitespace-nowrap ${currentPage === 1 ? 'text-gray-500 border-gray-700 bg-gray-800/50 cursor-not-allowed pointer-events-none' : 'text-gray-100 border-gray-600 bg-gray-900 hover:border-sky-500 hover:text-white'}`}
       >
         {isMobile ? '←' : '← Prev'}
       </Link>
@@ -54,7 +54,7 @@ export default function Pagination({ basePath = '/', currentPage = 1, totalPages
               key={p}
               href={pageHref(p)}
               aria-current={p === currentPage ? 'page' : undefined}
-              className={`px-2 sm:px-3.5 py-1.5 sm:py-2 rounded-md border text-xs sm:text-sm transition-colors min-w-[32px] sm:min-w-[40px] text-center ${p === currentPage ? 'bg-purple-600 border-purple-600 text-white font-semibold' : 'text-gray-100 border-gray-600 bg-gray-900 hover:border-purple-500 hover:text-white'}`}
+              className={`px-2 sm:px-3.5 py-1.5 sm:py-2 rounded-md border text-xs sm:text-sm transition-colors min-w-[32px] sm:min-w-[40px] text-center ${p === currentPage ? 'bg-blue-600 border-blue-600 text-white font-semibold' : 'text-gray-100 border-gray-600 bg-gray-900 hover:border-sky-500 hover:text-white'}`}
             >
               {p}
             </Link>
@@ -64,7 +64,7 @@ export default function Pagination({ basePath = '/', currentPage = 1, totalPages
 
       <Link
         href={pageHref(Math.min(totalPages, currentPage + 1))}
-        className={`px-2 sm:px-3.5 py-1.5 sm:py-2 rounded-md border text-xs sm:text-sm transition-colors whitespace-nowrap ${currentPage === totalPages ? 'text-gray-500 border-gray-700 bg-gray-800/50 cursor-not-allowed pointer-events-none' : 'text-gray-100 border-gray-600 bg-gray-900 hover:border-purple-500 hover:text-white'}`}
+        className={`px-2 sm:px-3.5 py-1.5 sm:py-2 rounded-md border text-xs sm:text-sm transition-colors whitespace-nowrap ${currentPage === totalPages ? 'text-gray-500 border-gray-700 bg-gray-800/50 cursor-not-allowed pointer-events-none' : 'text-gray-100 border-gray-600 bg-gray-900 hover:border-sky-500 hover:text-white'}`}
       >
         {isMobile ? '→' : 'Next →'}
       </Link>

@@ -6,7 +6,7 @@ import Image from 'next/image'
 export const revalidate = 60
 
 export const metadata = {
-  title: 'Hexmy Adult Actress 3Pornstar 4K Pornstar Black Pornstars | Hexmy',
+  title: 'FreshPrn Adult Actress 3Pornstar 4K Pornstar Black Pornstars | FreshPrn',
   description: 'A list of top-rated adult actresses and pornstars, including black pornstars and 4K-rated performers.',
   alternates: { canonical: '/pornstars' },
 }

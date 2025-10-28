@@ -6,7 +6,7 @@ Disallow: /_next/
 Disallow: /static/
 
 # Sitemaps
-Sitemap: https://hexmy.com/sitemap.xml
+Sitemap: https://freshprn.com/sitemap.xml
 
 # Crawl-delay
 Crawl-delay: 1

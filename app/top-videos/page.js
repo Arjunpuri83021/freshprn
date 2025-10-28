@@ -5,13 +5,31 @@ import Pagination from '../components/Pagination'
 export const revalidate = 60
 
 export const metadata = {
-  title: 'Hexmy scout69 porndish hitbdsm pornwild tubsexer pornhits pornhut | Hexmy',
-  description: 'pornmz pornwild hitbdsm freesexyindians milf300 sex18 desi49 wwwxxx xvedeo sex sister freeomovie 3gp king aunty sex adelt movies bf full hd bigfucktv | Hexmy',
+  title: 'FreshPrn scout69 porndish hitbdsm pornwild tubsexer pornhits pornhut | FreshPrn',
+  description: 'pornmz pornwild hitbdsm freesexyindians milf300 sex18 desi49 wwwxxx xvedeo sex sister freeomovie 3gp king aunty sex adelt movies bf full hd bigfucktv | FreshPrn',
   alternates: { canonical: '/top-videos' },
 }
 
 // Generate unique content from videos and meta keywords
 function generateTopVideosContent(videos, totalRecords, totalPages) {
+  // Brand-salted variant to differentiate FreshPrn output
+  const brandSalt = 'FreshPrn'.split('').reduce((acc, ch) => acc + ch.charCodeAt(0), 0)
+  const seed = 'top-videos'.split('').reduce((acc, ch) => acc + ch.charCodeAt(0), 0)
+  const variant = (seed + brandSalt) % 5
+  const prefaces = [
+    'FreshPrn ranks top videos with a lean, fast interface.',
+    'On FreshPrn, Top Videos emphasizes speed and clarity.',
+    'This FreshPrn Top section balances quality with quick browsing.',
+    'FreshPrn prioritizes instant playback for highly‑rated content.',
+    'Our Top Videos feed is tuned for smooth, fast discovery.'
+  ]
+  const streamingPhrases = [
+    'Enjoy uninterrupted HD streaming on any device.',
+    'Playback starts fast with minimal buffering.',
+    'Adaptive streams keep viewing smooth.',
+    'Mobile‑first performance for fluid scrubbing.',
+    'Clear visuals on efficient, lightweight pages.'
+  ]
   const videoTitles = videos.slice(0, 5).map(v => v.titel || v.title).filter(Boolean)
   
   const titleKeywords = videoTitles.map(title => {
@@ -38,11 +56,16 @@ function generateTopVideosContent(videos, totalRecords, totalPages) {
     exampleMention = ` Highest-rated videos include "${firstTitle}" among others.`
   }
   
-  return {
+  const base = {
     intro: `Explore ${totalRecords}+ top-rated videos featuring the highest-quality content across all categories. This collection showcases videos with the best viewer ratings, ensuring you access only the most popular and well-received content. Our Top Rated section highlights videos that have earned exceptional ratings from our community.`,
     details: `The Top Rated video library features content that has received the highest viewer ratings and engagement.${metaMention}${titleMention} Videos are ranked by user ratings and popularity metrics, ensuring the best content rises to the top. The collection spans multiple categories with only the highest-rated productions making the cut.`,
     navigation: `Browse through ${totalPages} pages of top-rated content, with 16 videos per page organized by rating. The collection is continuously updated as new videos earn high ratings, ensuring fresh highly-rated content alongside proven favorites.${exampleMention}`,
     closing: `All top-rated videos stream free in HD quality without registration requirements. Content is optimized for desktop and mobile viewing with adaptive playback, ensuring smooth streaming of the best-rated videos across all devices.`
+  }
+  return {
+    ...base,
+    intro: `${prefaces[variant]} ${base.intro}`,
+    closing: `${base.closing} ${streamingPhrases[variant]}`
   }
 }
 

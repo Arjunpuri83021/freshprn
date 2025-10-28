@@ -6,7 +6,7 @@ function getApiBase() {
     return window.location.origin.replace(/\/$/, '')
   }
   // Server-side fallback: use public site URL or prod domain
-  return (process.env.NEXT_PUBLIC_SITE_URL || 'https://hexmy.com').replace(/\/$/, '')
+  return (process.env.NEXT_PUBLIC_SITE_URL || 'https://freshprn.com').replace(/\/$/, '')
 }
 
 async function request(path, { method = 'GET', headers = {}, body } = {}) {

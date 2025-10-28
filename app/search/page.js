@@ -25,9 +25,9 @@ export async function generateMetadata({ searchParams }) {
     : 'Search'
   const description = q
     ? `Showing results for ${q} porn videos — total ${total} results${page > 1 ? `, page ${page}` : ''}.`
-    : 'Search videos on Hexmy.'
+    : 'Search videos on FreshPrn.'
 
-  const canonicalBase = process.env.NEXT_PUBLIC_SITE_URL || 'https://hexmy.com'
+  const canonicalBase = process.env.NEXT_PUBLIC_SITE_URL || 'https://freshprn.com'
   const canonical = q
     ? `${canonicalBase}/search?q=${encodeURIComponent(q)}${page > 1 ? `&page=${page}` : ''}`
     : `${canonicalBase}/search`

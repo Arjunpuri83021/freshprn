@@ -13,7 +13,7 @@ export async function generateMetadata({ params }) {
     ? `Watch ${titleTag} videos - Page ${page}. Explore premium ${titleTag} content updated daily.`
     : `Watch the best ${titleTag} videos. Explore premium ${titleTag} content updated daily.`
 
-  const canonicalBase = process.env.NEXT_PUBLIC_SITE_URL || 'https://hexmy.com'
+  const canonicalBase = process.env.NEXT_PUBLIC_SITE_URL || 'https://freshprn.com'
   const canonical = page > 1
     ? `${canonicalBase}/tag/${params.tag}/${page}`
     : `${canonicalBase}/tag/${params.tag}`

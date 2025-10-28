@@ -42,10 +42,10 @@ export async function generateMetadata({ params }) {
       ? ` in ${video.tags.slice(0, 3).join(', ')}` 
       : ''
     const duration = video?.minutes ? ` This ${video.minutes} minute` : ' This'
-    description = `Watch ${title}${performers}${categories} on Hexmy.${duration} premium HD video offers high-quality entertainment with smooth streaming. Explore thousands of videos across multiple categories and discover your favorites on Hexmy.com - your destination for premium adult content.`
+    description = `Watch ${title}${performers}${categories} on FreshPrn.${duration} premium HD video offers high-quality entertainment with smooth streaming. Explore thousands of videos across multiple categories and discover your favorites on FreshPrn.com - free HD adult videos refreshed daily.`
   }
   
-  const canonicalBase = process.env.NEXT_PUBLIC_SITE_URL || 'https://hexmy.com'
+  const canonicalBase = process.env.NEXT_PUBLIC_SITE_URL || 'https://freshprn.com'
   const titleSlug = slugify(title)
   const canonical = `${canonicalBase}/video/${id}${titleSlug ? `-${titleSlug}` : ''}`
   const imageUrl = video?.imageUrl || `${canonicalBase}/og-image.jpg`
@@ -54,7 +54,7 @@ export async function generateMetadata({ params }) {
   const keywords = [
     ...(Array.isArray(video?.tags) ? video.tags : []),
     ...(Array.isArray(video?.name) ? video.name : []),
-    'hexmy', 'premium video', 'adult entertainment'
+    'freshprn', 'premium video', 'adult entertainment'
   ].filter(Boolean).join(', ')
 
   return {
@@ -66,7 +66,7 @@ export async function generateMetadata({ params }) {
       title,
       description,
       url: canonical,
-      siteName: 'Hexmy',
+      siteName: 'FreshPrn',
       type: 'video.other',
       locale: 'en_US',
       images: [
@@ -90,7 +90,7 @@ export async function generateMetadata({ params }) {
       title,
       description,
       images: [imageUrl],
-      creator: '@hexmy',
+      creator: '@freshprn',
     },
     other: {
       'video:duration': video?.minutes ? `${video.minutes * 60}` : undefined,
@@ -126,7 +126,9 @@ export default async function VideoDetailPage({ params, searchParams }) {
 
   // Generate unique seed based on video ID for consistent but varied content
   const videoSeed = (video._id || id).toString().split('').reduce((acc, char) => acc + char.charCodeAt(0), 0)
-  const contentVariant = videoSeed % 5 // 5 different content variations
+  // Brand salt ensures FreshPrn produces different variants than other sites using similar templates
+  const brandSalt = 'FreshPrn'.split('').reduce((acc, ch) => acc + ch.charCodeAt(0), 0)
+  const contentVariant = (videoSeed + brandSalt) % 5 // 5 different content variations
   
   // Tag-specific content generator
   const generateTagSpecificContent = (tags, performerName) => {
@@ -392,7 +394,7 @@ export default async function VideoDetailPage({ params, searchParams }) {
   const explorePhrases = [
     `Browse our extensive ${video.tags?.[0] || 'video'} library for more content.`,
     `Check out similar videos in the ${video.tags?.[0] || 'same'} category.`,
-    `Discover more ${video.tags?.[0] || 'premium'} content on Hexmy.`,
+    `Discover more ${video.tags?.[0] || 'premium'} content on FreshPrn.`,
     `Find additional ${video.tags?.[0] || 'exclusive'} videos you'll enjoy.`,
     `Explore our curated ${video.tags?.[0] || 'collection'} of related content.`
   ]
@@ -400,6 +402,20 @@ export default async function VideoDetailPage({ params, searchParams }) {
   // Generate tag-specific content
   const performerName = Array.isArray(video.name) && video.name.length > 0 ? video.name[0] : null
   const tagSpecificContent = generateTagSpecificContent(video.tags, performerName)
+  
+  // Build a short intro (max ~180 chars) for the summary preview
+  const buildIntro = () => {
+    const titleText = video.titel || video.title || 'Video'
+    const star = Array.isArray(video.name) && video.name.length > 0 ? formatDisplay(video.name[0]) : ''
+    const primaryTag = Array.isArray(video.tags) && video.tags.length > 0 ? formatDisplay(video.tags[0]) : ''
+    let base = (video.desc && video.desc.length > 40) ? video.desc : `Watch ${titleText}${star ? ` with ${star}` : ''}${primaryTag ? ` — ${primaryTag}` : ''} on FreshPrn.`
+    if (!video.desc && video.minutes) base += ` ${video.minutes} min HD.`
+    base = String(base).replace(/\s+/g, ' ').trim()
+    if (base.length <= 180) return base
+    const trimmed = base.slice(0, 180)
+    return trimmed.replace(/[,;:]?\s+\S*$/, '') + '…'
+  }
+  const introText = buildIntro()
 
   // Determine tags list for related videos
   const videoTags = Array.isArray(video.tags) ? video.tags.filter(Boolean) : []
@@ -444,7 +460,7 @@ export default async function VideoDetailPage({ params, searchParams }) {
     "@context": "https://schema.org",
     "@type": "VideoObject",
     "name": video.titel || video.title || 'Video',
-    "description": video.desc || video.metatitel || 'Watch premium video on Hexmy',
+    "description": video.desc || video.metatitel || 'Watch premium video on FreshPrn',
     "thumbnailUrl": video.imageUrl || '',
     "uploadDate": video.createdAt || new Date().toISOString(),
     "duration": video.minutes ? `PT${video.minutes}M` : undefined,
@@ -452,10 +468,10 @@ export default async function VideoDetailPage({ params, searchParams }) {
     "embedUrl": video.iframeUrl || undefined,
     "publisher": {
       "@type": "Organization",
-      "name": "Hexmy",
+      "name": "FreshPrn",
       "logo": {
         "@type": "ImageObject",
-        "url": `${process.env.NEXT_PUBLIC_SITE_URL || 'https://hexmy.com'}/logo.png`
+        "url": `${process.env.NEXT_PUBLIC_SITE_URL || 'https://freshprn.com'}/logo.png`
       }
     },
     "interactionStatistic": {
@@ -489,47 +505,70 @@ export default async function VideoDetailPage({ params, searchParams }) {
       <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {relatedPage === 1 && (
           <>
-            <h1 className="text-2xl font-semibold mb-4">{video.titel || 'Video'}</h1>
+            <h1 className="text-2xl md:text-3xl font-bold tracking-tight mb-4">{video.titel || 'Video'}</h1>
 
             {/* Dummy player section with redirect on play click */}
-            <VideoRedirect link={video.link} imageUrl={video.imageUrl} title={video.titel} video={video} />
+            <div className="rounded-2xl overflow-hidden border border-white/10 shadow-2xl shadow-black/30 ring-1 ring-white/10">
+              <VideoRedirect link={video.link} imageUrl={video.imageUrl} title={video.titel} video={video} />
+            </div>
 
-          {/* Meta info */}
-          <div className="mt-6 grid grid-cols-1 md:grid-cols-2 gap-4 text-sm text-gray-300">
-            <div>
-              <div><span className="text-gray-400">Duration:</span> {video.minutes || 'N/A'} min</div>
-              <div><span className="text-gray-400">Views:</span> {video.views || 0}</div>
-              {Array.isArray(video.name) && video.name.length > 0 && (
-                <div className="mt-2">
-                  <span className="text-gray-400">Pornstars:</span>{' '}
-                  {video.name.map((n, i) => (
-                    <Link key={i} className="text-pink-400 hover:text-pink-300 mr-2" href={`/pornstar/${n}`}>
-                      {n.replace(/-/g, ' ')}
-                    </Link>
-                  ))}
-                </div>
-              )}
-            </div>
-            <div>
-              {Array.isArray(video.tags) && video.tags.length > 0 && (
-                <div className="mt-2">
-                  <span className="text-gray-400">Tags:</span>{' '}
-                  {video.tags.slice(0, 10).map((t, i) => (
-                    <span key={i}>
-                      <Link className="text-purple-400 hover:text-purple-300" href={`/tag/${t.toLowerCase().replace(/\s+/g,'-')}`}>
-                        {t.replace(/-/g, ' ')}
-                      </Link>
-                      {i < Math.min(video.tags.length, 10) - 1 && ', '}
-                    </span>
-                  ))}
-                </div>
-              )}
-            </div>
+          {/* Quick stats */}
+          <div className="mt-4 flex flex-wrap items-center gap-2 text-sm">
+            <span className="inline-flex items-center rounded-full border border-white/15 bg-white/5 px-3 py-1 text-gray-200">
+              <span className="mr-2 h-2 w-2 rounded-full bg-emerald-400" />
+              {video.minutes || 'N/A'} min
+            </span>
+            <span className="inline-flex items-center rounded-full border border-white/15 bg-white/5 px-3 py-1 text-gray-200">
+              <span className="mr-2 h-2 w-2 rounded-full bg-pink-400" />
+              {Number(video.views || 0).toLocaleString()} views
+            </span>
+            {Array.isArray(video.createdAt) ? null : (
+              <span className="inline-flex items-center rounded-full border border-white/15 bg-white/5 px-3 py-1 text-gray-200">
+                <span className="mr-2 h-2 w-2 rounded-full bg-purple-400" />
+                HD Quality
+              </span>
+            )}
           </div>
 
+          {/* Stars section */}
+          {Array.isArray(video.name) && video.name.length > 0 && (
+            <div className="mt-6">
+              <h3 className="text-sm font-semibold text-gray-300 mb-2">Stars</h3>
+              <div className="flex flex-wrap gap-2">
+                {video.name.map((n, i) => (
+                  <Link
+                    key={i}
+                    className="inline-flex items-center rounded-full border border-fuchsia-500/30 bg-fuchsia-500/10 px-3 py-1 text-fuchsia-300 hover:bg-fuchsia-500/20 transition-colors"
+                    href={`/pornstar/${n}`}
+                  >
+                    {n.replace(/-/g, ' ')}
+                  </Link>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* Tags section */}
+          {Array.isArray(video.tags) && video.tags.length > 0 && (
+            <div className="mt-4">
+              <h3 className="text-sm font-semibold text-gray-300 mb-2">Tags</h3>
+              <div className="flex flex-wrap gap-2">
+                {video.tags.slice(0, 20).map((t, i) => (
+                  <Link
+                    key={i}
+                    className="inline-flex items-center rounded-full border border-purple-500/30 bg-purple-500/10 px-3 py-1 text-purple-300 hover:bg-purple-500/20 transition-colors"
+                    href={`/tag/${t.toLowerCase().replace(/\s+/g,'-')}`}
+                  >
+                    {t.replace(/-/g, ' ')}
+                  </Link>
+                ))}
+              </div>
+            </div>
+          )}
+
           {/* Enhanced Description Section with Unique Content - 500+ words */}
-          <div className="mt-6">
-            <h2 className="text-lg font-semibold mb-2">
+          <div className="mt-8 rounded-2xl border border-white/10 bg-gradient-to-b from-white/5 to-transparent p-5">
+            <h2 className="text-lg font-semibold mb-3">
               {['Video Overview', 'About This Scene', 'Content Description', 'What to Expect', 'Scene Details'][contentVariant]}
             </h2>
             {video.desc ? (
@@ -541,6 +580,12 @@ export default async function VideoDetailPage({ params, searchParams }) {
                 {video.views > 1000 && (
                   <p>With {video.views.toLocaleString()} views, this has become a popular choice among viewers who appreciate quality content.</p>
                 )}
+                {/* FreshPrn-specific paragraph for uniqueness */}
+                <p>
+                  On FreshPrn, this title is curated with fast-loading playback and clean navigation in mind. Our editors surface similar
+                  {Array.isArray(video.tags) && video.tags.length > 0 ? ` ${formatDisplay(video.tags[0])}` : ''} content to help you discover
+                  more you’ll enjoy, while keeping the page lightweight for better mobile experience.
+                </p>
               </div>
             ) : (
               <div className="text-gray-300 leading-relaxed space-y-3">
@@ -652,6 +697,11 @@ export default async function VideoDetailPage({ params, searchParams }) {
                     'As a newer addition, this video offers fresh content for viewers looking to discover new scenes and performers. Early viewers can enjoy content before it becomes widely popular.'
                   )}
                   {Array.isArray(video.tags) && video.tags.length > 0 && ` Fans of ${formatDisplay(video.tags[0])} content will find this particularly appealing.`}
+                </p>
+                {/* FreshPrn-specific paragraph for uniqueness */}
+                <p>
+                  FreshPrn focuses on efficient browsing and relevant suggestions. After watching, check the related grid below for handpicked
+                  videos with similar themes and performers. Our goal is a fast, clean experience without unnecessary clutter.
                 </p>
               </div>
             )}

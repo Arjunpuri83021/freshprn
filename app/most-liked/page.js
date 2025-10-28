@@ -6,8 +6,8 @@ import Pagination from '../components/Pagination'
 export const revalidate = 60
 
 export const metadata = {
-  title: 'Hexmy bad wap wwwxxx xvedeo sexv icegay sex sister tiktits |Hexmy',
-  description: 'xmoviesforyou aunty sex wwwxxx sex sister aunty sexy video bad wap beeg hindi badwap badwap com sexv tiktits boobs kiss boobs pressing borwap boudi sex | Hexmy',
+  title: 'FreshPrn popular videos — most liked and trending',
+  description: 'Explore most-liked HD porn videos on FreshPrn. Trending categories and top stars with daily updates for fast, clean streaming.',
   alternates: { canonical: '/most-liked' },
 }
 

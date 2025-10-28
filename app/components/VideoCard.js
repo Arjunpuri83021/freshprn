@@ -89,9 +89,9 @@ export default function VideoCard({ video, priority = false }) {
   }
 
   return (
-    <div className="video-card bg-gray-800 rounded-lg overflow-hidden shadow-lg group">
+    <div className="video-card rounded-2xl overflow-hidden border border-white/10 bg-white/5 backdrop-blur-sm group transition-transform duration-200 hover:-translate-y-0.5 hover:shadow-xl hover:shadow-black/30">
       <Link href={`/video/${getVideoUrlSegment()}`} onClick={handleVideoClick}>
-        <div className="relative aspect-video bg-gray-700">
+        <div className="relative aspect-video bg-gray-800">
           {/* Thumbnail Image */}
           {!imageError && video.imageUrl ? (
             <>
@@ -110,8 +110,8 @@ export default function VideoCard({ video, priority = false }) {
               
               {/* Loading placeholder */}
               {!imageLoaded && (
-                <div className="absolute inset-0 bg-gray-700 animate-pulse flex items-center justify-center">
-                  <div className="w-12 h-12 border-4 border-purple-500 border-t-transparent rounded-full animate-spin"></div>
+                <div className="absolute inset-0 bg-gradient-to-br from-gray-800 to-gray-900 animate-pulse flex items-center justify-center">
+                  <div className="w-12 h-12 border-4 border-sky-400/70 border-t-transparent rounded-full animate-spin" />
                 </div>
               )}
             </>
@@ -124,14 +124,14 @@ export default function VideoCard({ video, priority = false }) {
 
           {/* Play Button Overlay */}
           <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-30 transition-all duration-300 flex items-center justify-center">
-            <div className="w-12 h-12 bg-white bg-opacity-20 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transform scale-75 group-hover:scale-100 transition-all duration-300">
+            <div className="w-12 h-12 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transform scale-75 group-hover:scale-100 transition-all duration-300 border border-white/20 bg-black/30 backdrop-blur-sm">
               <Play className="w-6 h-6 text-white ml-1" />
             </div>
           </div>
 
           {/* Duration Badge */}
           {video.minutes && (
-            <div className="absolute bottom-2 right-2 bg-black bg-opacity-75 text-white text-xs px-2 py-1 rounded flex items-center space-x-1">
+            <div className="absolute bottom-2 right-2 text-white text-xs px-2 py-1 rounded-full flex items-center space-x-1 border border-white/15 bg-black/60 backdrop-blur-sm">
               <Clock size={12} />
               <span>{formatDuration(video.minutes)}</span>
             </div>
@@ -139,7 +139,7 @@ export default function VideoCard({ video, priority = false }) {
 
           {/* Views Badge */}
           {video.views && (
-            <div className="absolute top-2 right-2 bg-black bg-opacity-75 text-white text-xs px-2 py-1 rounded flex items-center space-x-1">
+            <div className="absolute top-2 right-2 text-white text-xs px-2 py-1 rounded-full flex items-center space-x-1 border border-white/15 bg-black/60 backdrop-blur-sm">
               <Eye size={12} />
               <span>{formatViews(video.views)}</span>
             </div>
@@ -147,7 +147,7 @@ export default function VideoCard({ video, priority = false }) {
 
 
           {/* Quality Badge */}
-          <div className="absolute top-2 left-2 bg-purple-600 text-white text-xs px-2 py-1 rounded font-semibold">
+          <div className="absolute top-2 left-2 text-white text-xs px-2 py-1 rounded-full font-semibold border border-white/15 bg-gradient-to-r from-blue-600 to-teal-600">
             HD
           </div>
         </div>
@@ -157,7 +157,7 @@ export default function VideoCard({ video, priority = false }) {
       <div className="p-4 space-y-3">
         {/* Title */}
         <Link href={`/video/${getVideoUrlSegment()}`} onClick={handleVideoClick}>
-          <h3 className="text-white font-medium text-sm line-clamp-2 hover:text-purple-400 transition-colors duration-200">
+          <h3 className="text-white font-medium text-sm line-clamp-2 hover:text-sky-300 transition-colors duration-200">
             {getVideoTitle()}
           </h3>
         </Link>
@@ -169,7 +169,7 @@ export default function VideoCard({ video, priority = false }) {
               <Link
                 key={index}
                 href={`/pornstar/${name.toLowerCase().replace(/\s+/g, '-')}`}
-                className="text-xs text-pink-400 hover:text-pink-300 transition-colors duration-200 flex items-center space-x-1"
+                className="text-xs text-teal-300 hover:text-teal-200 transition-colors duration-200 flex items-center space-x-1"
               >
                 <Star size={10} />
                 <span>{name}</span>
@@ -178,20 +178,7 @@ export default function VideoCard({ video, priority = false }) {
           </div>
         )}
 
-        {/* Tags */}
-        {getTags().length > 0 && (
-          <div className="flex flex-wrap gap-1">
-            {getTags().map((tag, index) => (
-              <Link
-                key={index}
-                href={`/tag/${tag.toLowerCase().replace(/\s+/g, '-')}`}
-                className="text-xs bg-gray-700 hover:bg-purple-600 text-gray-300 hover:text-white px-2 py-1 rounded transition-colors duration-200"
-              >
-                {tag}
-              </Link>
-            ))}
-          </div>
-        )}
+        
 
         {/* Stats */}
         <div className="flex items-center justify-between text-xs text-gray-400">
@@ -213,7 +200,7 @@ export default function VideoCard({ video, priority = false }) {
           {/* Video Code - Right Side */}
           {getVideoNumber() && (
             <div className="flex items-center space-x-1">
-              <span className="text-blue-400 font-semibold">Video code #{getVideoNumber()}</span>
+              <span className="text-sky-300 font-semibold">Code #{getVideoNumber()}</span>
             </div>
           )}
         </div>

@@ -9,8 +9,8 @@ export default function ContactPage() {
       <h1 className="text-3xl font-bold mb-6">Contact Us</h1>
       <p className="text-gray-300 mb-4">Have questions or feedback? Reach out to us anytime.</p>
       <div className="space-y-2 text-gray-400">
-        <p>Email: support@hexmy.com</p>
-        <p>Business: business@hexmy.com</p>
+        <p>Email: support@freshprn.com</p>
+        <p>Business: business@freshprn.com</p>
       </div>
     </div>
   )
