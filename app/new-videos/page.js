@@ -1,13 +1,38 @@
 import { api } from '../lib/api'
+import { fetchSeoMeta } from '../lib/seoMeta'
 import VideoCard from '../components/VideoCard'
 import Pagination from '../components/Pagination'
 
 export const revalidate = 60
 
-export const metadata = {
-  title: 'New Videos',
-  description: 'Watch the latest new videos on FreshPrn with high-quality streaming.',
-  alternates: { canonical: '/new-videos' },
+export async function generateMetadata() {
+  const fallback = {
+    title: 'New Videos',
+    description: 'Watch the latest new videos on FreshPrn with high-quality streaming.',
+    alternates: { canonical: '/new-videos' },
+  }
+
+  const meta = await fetchSeoMeta('/new-videos')
+  if (!meta) return fallback
+
+  return {
+    title: meta.metaTitle || fallback.title,
+    description: meta.metaDescription || fallback.description,
+    alternates: { canonical: meta.pagePath || '/new-videos' },
+    openGraph: {
+      title: meta.ogTitle || meta.metaTitle || fallback.title,
+      description: meta.ogDescription || meta.metaDescription || fallback.description,
+      url: meta.pagePath || '/new-videos',
+      type: 'website',
+      images: meta.ogImage ? [{ url: meta.ogImage }] : undefined,
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: meta.metaTitle || fallback.title,
+      description: meta.metaDescription || fallback.description,
+      images: meta.ogImage ? [meta.ogImage] : undefined,
+    },
+  }
 }
 
 // Generate unique content from videos

@@ -1,14 +1,39 @@
 import Link from 'next/link'
 import { api } from '../lib/api'
+import { fetchSeoMeta } from '../lib/seoMeta'
 import Pagination from '../components/Pagination'
 import Image from 'next/image'
 
 export const revalidate = 60
 
-export const metadata = {
-  title: 'FreshPrn Adult Actress 3Pornstar 4K Pornstar Black Pornstars | FreshPrn',
-  description: 'A list of top-rated adult actresses and pornstars, including black pornstars and 4K-rated performers.',
-  alternates: { canonical: '/pornstars' },
+export async function generateMetadata() {
+  const fallback = {
+    title: 'FreshPrn Adult Actress 3Pornstar 4K Pornstar Black Pornstars | FreshPrn',
+    description: 'A list of top-rated adult actresses and pornstars, including black pornstars and 4K-rated performers.',
+    alternates: { canonical: '/pornstars' },
+  }
+
+  const meta = await fetchSeoMeta('/pornstars')
+  if (!meta) return fallback
+
+  return {
+    title: meta.metaTitle || fallback.title,
+    description: meta.metaDescription || fallback.description,
+    alternates: { canonical: meta.pagePath || '/pornstars' },
+    openGraph: {
+      title: meta.ogTitle || meta.metaTitle || fallback.title,
+      description: meta.ogDescription || meta.metaDescription || fallback.description,
+      url: meta.pagePath || '/pornstars',
+      type: 'website',
+      images: meta.ogImage ? [{ url: meta.ogImage }] : undefined,
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: meta.metaTitle || fallback.title,
+      description: meta.metaDescription || fallback.description,
+      images: meta.ogImage ? [meta.ogImage] : undefined,
+    },
+  }
 }
 
 function toSlug(s) {

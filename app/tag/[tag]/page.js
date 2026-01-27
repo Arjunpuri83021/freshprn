@@ -1,5 +1,6 @@
 import Link from 'next/link'
 import { api } from '../../lib/api'
+import { fetchSeoMeta } from '../../lib/seoMeta'
 import VideoCard from '../../components/VideoCard'
 import Pagination from '../../components/Pagination'
 
@@ -19,14 +20,21 @@ export async function generateMetadata({ params, searchParams }) {
     ogImage = first?.imageUrl || null
   } catch {}
 
-  const baseTitle = `${titleTag} Porn Videos`
-  const title = page > 1
-    ? `${baseTitle} – Page ${page} | FreshPrn`
-    : `${baseTitle} – Free ${titleTag} Sex in HD | FreshPrn`
+  const fallbackBaseTitle = `${titleTag} Porn Videos`
+  const fallbackTitle = page > 1
+    ? `${fallbackBaseTitle} – Page ${page} | FreshPrn`
+    : `${fallbackBaseTitle} – Free ${titleTag} Sex in HD | FreshPrn`
 
-  const description = page > 1
+  const fallbackDescription = page > 1
     ? `Browse page ${page}${totalPages ? ` of ${totalPages}` : ''} for the best ${titleTag} porn videos in HD on FreshPrn. Free streaming, updated daily.${totalRecords ? ` ${totalRecords}+ videos available.` : ''}`
     : `Watch the best ${titleTag} porn videos in HD on FreshPrn. Free streaming, updated daily.${totalRecords ? ` ${totalRecords}+ videos available.` : ''}`
+
+  const basePath = `/tag/${params.tag}`
+  const seoMeta = await fetchSeoMeta(basePath)
+  const baseTitle = seoMeta?.metaTitle || fallbackBaseTitle
+  const baseDescription = seoMeta?.metaDescription || fallbackDescription
+  const title = page > 1 ? `${baseTitle} – Page ${page}` : baseTitle
+  const description = page > 1 ? `${baseDescription} (Page ${page})` : baseDescription
 
   const canonicalBase = process.env.NEXT_PUBLIC_SITE_URL || 'https://freshprn.com'
   const canonical = page > 1
@@ -49,17 +57,17 @@ export async function generateMetadata({ params, searchParams }) {
       maxVideoPreview: -1,
     },
     openGraph: {
-      title,
-      description,
+      title: seoMeta?.ogTitle || seoMeta?.metaTitle || title,
+      description: seoMeta?.ogDescription || seoMeta?.metaDescription || description,
       url: canonical,
       type: 'website',
-      images: ogImage ? [{ url: ogImage } ] : undefined,
+      images: (seoMeta?.ogImage || ogImage) ? [{ url: seoMeta?.ogImage || ogImage }] : undefined,
     },
     twitter: {
       card: 'summary_large_image',
-      title,
-      description,
-      images: ogImage ? [ogImage] : undefined,
+      title: seoMeta?.metaTitle || title,
+      description: seoMeta?.metaDescription || description,
+      images: (seoMeta?.ogImage || ogImage) ? [seoMeta?.ogImage || ogImage] : undefined,
     },
   }
 }

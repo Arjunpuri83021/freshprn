@@ -1,9 +1,34 @@
 import Link from 'next/link'
+import { fetchSeoMeta } from '../lib/seoMeta'
 
-export const metadata = {
-  title: 'Categories',
-  description: 'Browse video categories on FreshPrn.',
-  alternates: { canonical: '/categories' },
+export async function generateMetadata() {
+  const fallback = {
+    title: 'Categories',
+    description: 'Browse video categories on FreshPrn.',
+    alternates: { canonical: '/categories' },
+  }
+
+  const meta = await fetchSeoMeta('/categories')
+  if (!meta) return fallback
+
+  return {
+    title: meta.metaTitle || fallback.title,
+    description: meta.metaDescription || fallback.description,
+    alternates: { canonical: meta.pagePath || '/categories' },
+    openGraph: {
+      title: meta.ogTitle || meta.metaTitle || fallback.title,
+      description: meta.ogDescription || meta.metaDescription || fallback.description,
+      url: meta.pagePath || '/categories',
+      type: 'website',
+      images: meta.ogImage ? [{ url: meta.ogImage }] : undefined,
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: meta.metaTitle || fallback.title,
+      description: meta.metaDescription || fallback.description,
+      images: meta.ogImage ? [meta.ogImage] : undefined,
+    },
+  }
 }
 
 const categories = [

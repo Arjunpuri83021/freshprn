@@ -1,4 +1,5 @@
 import { api } from '../../lib/api'
+import { fetchSeoMeta } from '../../lib/seoMeta'
 import VideoCard from '../../components/VideoCard'
 import Pagination from '../../components/Pagination'
 
@@ -8,21 +9,33 @@ export async function generateMetadata({ params, searchParams }) {
   const name = decodeURIComponent(params.name)
   const page = Number(searchParams?.page || 1)
   const displayName = name.replace(/-/g, ' ')
-  const title = `FreshPrn - ${displayName} xvids porno missax trisha paytas porn`
-  const description = `sexy movie super movie ${displayName}. chinese family sex huge tits Porn Videos big natural boobs download vporn sex videos`
+  const fallbackTitle = `FreshPrn - ${displayName} xvids porno missax trisha paytas porn`
+  const fallbackDescription = `sexy movie super movie ${displayName}. chinese family sex huge tits Porn Videos big natural boobs download vporn sex videos`
+
+  const basePath = `/pornstar/${params.name}`
+  const seoMeta = await fetchSeoMeta(basePath)
+  const title = seoMeta?.metaTitle || fallbackTitle
+  const description = seoMeta?.metaDescription || fallbackDescription
 
   const canonicalBase = process.env.NEXT_PUBLIC_SITE_URL || 'https://freshprn.com'
-  const canonical = `${canonicalBase}/pornstar/${params.name}`
+  const canonical = `${canonicalBase}${basePath}`
 
   return {
     title,
     description,
     alternates: { canonical },
     openGraph: {
-      title,
-      description,
+      title: seoMeta?.ogTitle || seoMeta?.metaTitle || title,
+      description: seoMeta?.ogDescription || seoMeta?.metaDescription || description,
       url: canonical,
       type: 'profile',
+      images: seoMeta?.ogImage ? [{ url: seoMeta.ogImage }] : undefined,
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: seoMeta?.metaTitle || title,
+      description: seoMeta?.metaDescription || description,
+      images: seoMeta?.ogImage ? [seoMeta.ogImage] : undefined,
     },
   }
 }

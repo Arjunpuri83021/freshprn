@@ -1,4 +1,5 @@
 import { api } from '../lib/api'
+import { fetchSeoMeta } from '../lib/seoMeta'
 import VideoCard from '../components/VideoCard'
 import Pagination from '../components/Pagination'
 
@@ -20,12 +21,16 @@ export async function generateMetadata({ searchParams }) {
     } catch (_) {}
   }
 
-  const title = q
+  const fallbackTitle = q
     ? `${capitalize(q)} Best porn videos${page > 1 ? ` - Page ${page}` : ''}`
     : 'Search'
-  const description = q
+  const fallbackDescription = q
     ? `Showing results for ${q} porn videos — total ${total} results${page > 1 ? `, page ${page}` : ''}.`
     : 'Search videos on FreshPrn.'
+
+  const meta = await fetchSeoMeta('/search')
+  const title = meta?.metaTitle || fallbackTitle
+  const description = meta?.metaDescription || fallbackDescription
 
   const canonicalBase = process.env.NEXT_PUBLIC_SITE_URL || 'https://freshprn.com'
   const canonical = q
@@ -38,11 +43,18 @@ export async function generateMetadata({ searchParams }) {
     alternates: { canonical },
     keywords: q ? [`${q} porn videos`, `${q} sex videos`, `${q} xxx`, 'free porn', 'best porn videos'] : undefined,
     openGraph: {
-      title,
-      description,
+      title: meta?.ogTitle || meta?.metaTitle || title,
+      description: meta?.ogDescription || meta?.metaDescription || description,
       url: canonical,
       type: 'website',
+      images: meta?.ogImage ? [{ url: meta.ogImage }] : undefined,
     },
+    twitter: meta ? {
+      card: 'summary_large_image',
+      title: meta.metaTitle || title,
+      description: meta.metaDescription || description,
+      images: meta.ogImage ? [meta.ogImage] : undefined,
+    } : undefined,
   }
 }
 

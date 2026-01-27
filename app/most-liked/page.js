@@ -1,14 +1,39 @@
 import Link from 'next/link'
 import { api } from '../lib/api'
+import { fetchSeoMeta } from '../lib/seoMeta'
 import VideoCard from '../components/VideoCard'
 import Pagination from '../components/Pagination'
 
 export const revalidate = 60
 
-export const metadata = {
-  title: 'FreshPrn popular videos — most liked and trending',
-  description: 'Explore most-liked HD porn videos on FreshPrn. Trending categories and top stars with daily updates for fast, clean streaming.',
-  alternates: { canonical: '/most-liked' },
+export async function generateMetadata() {
+  const fallback = {
+    title: 'FreshPrn popular videos — most liked and trending',
+    description: 'Explore most-liked HD porn videos on FreshPrn. Trending categories and top stars with daily updates for fast, clean streaming.',
+    alternates: { canonical: '/most-liked' },
+  }
+
+  const meta = await fetchSeoMeta('/most-liked')
+  if (!meta) return fallback
+
+  return {
+    title: meta.metaTitle || fallback.title,
+    description: meta.metaDescription || fallback.description,
+    alternates: { canonical: meta.pagePath || '/most-liked' },
+    openGraph: {
+      title: meta.ogTitle || meta.metaTitle || fallback.title,
+      description: meta.ogDescription || meta.metaDescription || fallback.description,
+      url: meta.pagePath || '/most-liked',
+      type: 'website',
+      images: meta.ogImage ? [{ url: meta.ogImage }] : undefined,
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: meta.metaTitle || fallback.title,
+      description: meta.metaDescription || fallback.description,
+      images: meta.ogImage ? [meta.ogImage] : undefined,
+    },
+  }
 }
 
 // Generate unique content from videos and meta keywords

@@ -1,4 +1,5 @@
 import { api } from '../../lib/api'
+import { fetchSeoMeta } from '../../lib/seoMeta'
 import VideoCard from '../../components/VideoCard'
 import Pagination from '../../components/Pagination'
 
@@ -118,14 +119,37 @@ export async function generateMetadata({ params, searchParams }) {
   const page = Number(searchParams?.page || 1)
   const titleBase = categoryTitles[slug] || slug.replace(/-/g, ' ')
   const meta = categoryMeta[slug]
-  const title = meta ? meta.title(page) : (page > 1 ? `${titleBase} Videos - Page ${page}` : `${titleBase} Videos`)
-  const description = meta ? meta.desc : `Watch ${titleBase} videos on FreshPrn${page > 1 ? ` - Page ${page}` : ''}.`
+  const basePath = `/category/${slug}`
+
+  const fallbackTitle = meta ? meta.title(page) : (page > 1 ? `${titleBase} Videos - Page ${page}` : `${titleBase} Videos`)
+  const fallbackDescription = meta ? meta.desc : `Watch ${titleBase} videos on FreshPrn${page > 1 ? ` - Page ${page}` : ''}.`
+
+  const seoMeta = await fetchSeoMeta(basePath)
+  const baseTitle = seoMeta?.metaTitle || fallbackTitle
+  const baseDescription = seoMeta?.metaDescription || fallbackDescription
+  const title = page > 1 ? `${baseTitle} - Page ${page}` : baseTitle
+  const description = page > 1 ? `${baseDescription} (Page ${page})` : baseDescription
+
   const canonicalBase = process.env.NEXT_PUBLIC_SITE_URL || 'https://freshprn.com'
-  const canonical = page > 1 ? `${canonicalBase}/category/${slug}/${page}` : `${canonicalBase}/category/${slug}`
+  const canonical = page > 1 ? `${canonicalBase}${basePath}/${page}` : `${canonicalBase}${basePath}`
+
   return {
     title,
     description,
     alternates: { canonical },
+    openGraph: seoMeta ? {
+      title: seoMeta.ogTitle || seoMeta.metaTitle || title,
+      description: seoMeta.ogDescription || seoMeta.metaDescription || description,
+      url: canonical,
+      type: 'website',
+      images: seoMeta.ogImage ? [{ url: seoMeta.ogImage }] : undefined,
+    } : undefined,
+    twitter: seoMeta ? {
+      card: 'summary_large_image',
+      title: seoMeta.metaTitle || title,
+      description: seoMeta.metaDescription || description,
+      images: seoMeta.ogImage ? [seoMeta.ogImage] : undefined,
+    } : undefined,
   }
 }
 

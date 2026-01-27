@@ -1,13 +1,38 @@
 import { api } from '../lib/api'
+import { fetchSeoMeta } from '../lib/seoMeta'
 import VideoCard from '../components/VideoCard'
 import Pagination from '../components/Pagination'
 
 export const revalidate = 60
 
-export const metadata = {
-  title: 'FreshPrn Desi49 SxyPrn & BF Sex Videos | IndianGaySite on FreshPrn',
-  description: 'desi 52 com desi 49 com dehati sex dasi sex blueflim boyfriendtv com bollywood sex bf sexy indiangaysite sxyprn bf hindi video bf hindi movie banglaxx | FreshPrn',
-  alternates: { canonical: '/indian' },
+export async function generateMetadata() {
+  const fallback = {
+    title: 'FreshPrn Desi49 SxyPrn & BF Sex Videos | IndianGaySite on FreshPrn',
+    description: 'desi 52 com desi 49 com dehati sex dasi sex blueflim boyfriendtv com bollywood sex bf sexy indiangaysite sxyprn bf hindi video bf hindi movie banglaxx | FreshPrn',
+    alternates: { canonical: '/indian' },
+  }
+
+  const meta = await fetchSeoMeta('/indian')
+  if (!meta) return fallback
+
+  return {
+    title: meta.metaTitle || fallback.title,
+    description: meta.metaDescription || fallback.description,
+    alternates: { canonical: meta.pagePath || '/indian' },
+    openGraph: {
+      title: meta.ogTitle || meta.metaTitle || fallback.title,
+      description: meta.ogDescription || meta.metaDescription || fallback.description,
+      url: meta.pagePath || '/indian',
+      type: 'website',
+      images: meta.ogImage ? [{ url: meta.ogImage }] : undefined,
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: meta.metaTitle || fallback.title,
+      description: meta.metaDescription || fallback.description,
+      images: meta.ogImage ? [meta.ogImage] : undefined,
+    },
+  }
 }
 
 // Generate unique content from videos and meta keywords

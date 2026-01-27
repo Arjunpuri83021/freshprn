@@ -5,10 +5,85 @@ import Pagination from './components/Pagination'
 
 export const revalidate = 60
 
-export const metadata = {
-  title: 'FreshPrn Free HD Adult Videos and XXXHD Porn',
-  description: 'FreshPrn brings fast, clean, free HD porn with trending categories and top stars. Daily updates, no fluff. Explore Indian, Teen, MILF, Lesbian, POV, Anal, and more in crisp HD.',
-  alternates: { canonical: '/' },
+export async function generateMetadata() {
+  const siteUrl = (process.env.NEXT_PUBLIC_SITE_URL || 'https://freshprn.com').replace(/\/$/, '')
+
+  const baseMeta = {
+    title: 'FreshPrn Free HD Adult Videos and XXXHD Porn',
+    description:
+      'FreshPrn brings fast, clean, free HD porn with trending categories and top stars. Daily updates, no fluff. Explore Indian, Teen, MILF, Lesbian, POV, Anal, and more in crisp HD.',
+    alternates: { canonical: '/' },
+    openGraph: {
+      title: 'FreshPrn Free HD Adult Videos and XXXHD Porn',
+      description:
+        'FreshPrn brings fast, clean, free HD porn with trending categories and top stars. Daily updates, no fluff.',
+      url: `${siteUrl}/`,
+      siteName: 'FreshPrn',
+      type: 'website',
+      images: [
+        {
+          url: '/og-image.jpg',
+          width: 1200,
+          height: 630,
+          alt: 'FreshPrn - Free HD Adult Videos',
+        },
+      ],
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: 'FreshPrn Free HD Adult Videos and XXXHD Porn',
+      description:
+        'FreshPrn brings fast, clean, free HD porn with trending categories and top stars. Daily updates, no fluff.',
+      images: ['/og-image.jpg'],
+    },
+  }
+
+  const apiBase = (process.env.NEXT_PUBLIC_API_URL || process.env.API_URL || 'http://localhost:5000').replace(/\/$/, '')
+
+  try {
+    const res = await fetch(
+      `${apiBase}/seo-meta/path/${encodeURIComponent('/')}` + `?site=${encodeURIComponent('freshprn')}`,
+      { cache: 'no-store' }
+    )
+
+    if (!res.ok) return baseMeta
+
+    const data = await res.json().catch(() => null)
+    const m = data?.seoMeta
+    if (!m) return baseMeta
+
+    const pagePath = m.pagePath || '/'
+    const fullUrl = `${siteUrl}${pagePath.startsWith('/') ? pagePath : `/${pagePath}`}`
+
+    return {
+      ...baseMeta,
+      title: m.metaTitle || baseMeta.title,
+      description: m.metaDescription || baseMeta.description,
+      alternates: {
+        canonical: pagePath,
+      },
+      openGraph: {
+        ...baseMeta.openGraph,
+        title: m.ogTitle || m.metaTitle || baseMeta.openGraph.title,
+        description: m.ogDescription || m.metaDescription || baseMeta.openGraph.description,
+        url: fullUrl,
+        images: m.ogImage
+          ? [
+              {
+                url: m.ogImage,
+              },
+            ]
+          : baseMeta.openGraph.images,
+      },
+      twitter: {
+        ...baseMeta.twitter,
+        title: m.metaTitle || baseMeta.twitter.title,
+        description: m.metaDescription || baseMeta.twitter.description,
+      },
+    }
+  } catch (e) {
+    return baseMeta
+  }
 }
 
 export default async function HomePage({ searchParams }) {

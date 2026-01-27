@@ -1,13 +1,38 @@
 import { api } from '../lib/api'
+import { fetchSeoMeta } from '../lib/seoMeta'
 import VideoCard from '../components/VideoCard'
 import Pagination from '../components/Pagination'
 
 export const revalidate = 60
 
-export const metadata = {
-  title: 'FreshPrn scout69 porndish hitbdsm pornwild tubsexer pornhits pornhut | FreshPrn',
-  description: 'pornmz pornwild hitbdsm freesexyindians milf300 sex18 desi49 wwwxxx xvedeo sex sister freeomovie 3gp king aunty sex adelt movies bf full hd bigfucktv | FreshPrn',
-  alternates: { canonical: '/top-videos' },
+export async function generateMetadata() {
+  const fallback = {
+    title: 'FreshPrn scout69 porndish hitbdsm pornwild tubsexer pornhits pornhut | FreshPrn',
+    description: 'pornmz pornwild hitbdsm freesexyindians milf300 sex18 desi49 wwwxxx xvedeo sex sister freeomovie 3gp king aunty sex adelt movies bf full hd bigfucktv | FreshPrn',
+    alternates: { canonical: '/top-videos' },
+  }
+
+  const meta = await fetchSeoMeta('/top-videos')
+  if (!meta) return fallback
+
+  return {
+    title: meta.metaTitle || fallback.title,
+    description: meta.metaDescription || fallback.description,
+    alternates: { canonical: meta.pagePath || '/top-videos' },
+    openGraph: {
+      title: meta.ogTitle || meta.metaTitle || fallback.title,
+      description: meta.ogDescription || meta.metaDescription || fallback.description,
+      url: meta.pagePath || '/top-videos',
+      type: 'website',
+      images: meta.ogImage ? [{ url: meta.ogImage }] : undefined,
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: meta.metaTitle || fallback.title,
+      description: meta.metaDescription || fallback.description,
+      images: meta.ogImage ? [meta.ogImage] : undefined,
+    },
+  }
 }
 
 // Generate unique content from videos and meta keywords
@@ -71,17 +96,18 @@ function generateTopVideosContent(videos, totalRecords, totalPages) {
 
 export default async function TopVideosPage({ searchParams }) {
   const page = Number(searchParams?.page || 1)
-  const data = await api.getTopRated(page, 16).catch(() => ({ data: [], totalPages: 1, totalRecords: 0 }))
-  const list = data.data || []
-  const totalRecords = data.totalRecords || 0
+  const res = await api.getTopRated(page, 16).catch(() => ({ records: [], data: [], videos: [], totalPages: 1, totalRecords: 0 }))
+  const list = res.records || res.data || res.videos || []
+  const totalPages = res.totalPages || (res.totalRecords ? Math.max(1, Math.ceil(Number(res.totalRecords) / 16)) : 1)
+  const totalRecords = res.totalRecords || 0
   
-  const content = page === 1 ? generateTopVideosContent(list, totalRecords, data.totalPages || 1) : null
+  const content = page === 1 ? generateTopVideosContent(list, totalRecords, totalPages) : null
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
       <div className="mb-6">
         <h1 className="text-2xl font-semibold">Top Rated Videos</h1>
-        <p className="text-gray-400 mt-1 text-sm">Showing page {page} of {data.totalPages || 1} ({totalRecords} total videos)</p>
+        <p className="text-gray-400 mt-1 text-sm">Showing page {page} of {totalPages} ({totalRecords} total videos)</p>
       </div>
       
       <div className="grid video-grid">
@@ -90,7 +116,7 @@ export default async function TopVideosPage({ searchParams }) {
         ))}
       </div>
       
-      <Pagination basePath="/top-videos" currentPage={page} totalPages={data.totalPages || 1} />
+      <Pagination basePath="/top-videos?" currentPage={page} totalPages={totalPages} />
       
       {content && (
         <div className="mt-8 text-gray-300 leading-relaxed space-y-4 bg-gray-800/50 rounded-lg p-6">

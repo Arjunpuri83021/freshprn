@@ -1,12 +1,37 @@
 import Link from 'next/link'
 import { api } from '../lib/api'
+import { fetchSeoMeta } from '../lib/seoMeta'
 
 export const revalidate = 300
 
-export const metadata = {
-  title: 'Best All Porn Tags - Browse by Category | FreshPrn',
-  description: 'Browse all porn video tags and categories on FreshPrn. Find your favorite adult content by tag - organized alphabetically for easy navigation.',
-  alternates: { canonical: '/tags' },
+export async function generateMetadata() {
+  const fallback = {
+    title: 'Best All Porn Tags - Browse by Category | FreshPrn',
+    description: 'Browse all porn video tags and categories on FreshPrn. Find your favorite adult content by tag - organized alphabetically for easy navigation.',
+    alternates: { canonical: '/tags' },
+  }
+
+  const meta = await fetchSeoMeta('/tags')
+  if (!meta) return fallback
+
+  return {
+    title: meta.metaTitle || fallback.title,
+    description: meta.metaDescription || fallback.description,
+    alternates: { canonical: meta.pagePath || '/tags' },
+    openGraph: {
+      title: meta.ogTitle || meta.metaTitle || fallback.title,
+      description: meta.ogDescription || meta.metaDescription || fallback.description,
+      url: meta.pagePath || '/tags',
+      type: 'website',
+      images: meta.ogImage ? [{ url: meta.ogImage }] : undefined,
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: meta.metaTitle || fallback.title,
+      description: meta.metaDescription || fallback.description,
+      images: meta.ogImage ? [meta.ogImage] : undefined,
+    },
+  }
 }
 
 const LETTERS = ['#', ...'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('')]
