@@ -21,7 +21,7 @@ export async function GET() {
     <lastmod>${currentDate}</lastmod>
   </sitemap>
   <sitemap>
-    <loc>${siteUrl}/sitemap-videos.xml</loc>
+    <loc>${siteUrl}/sitemap-videos-index.xml</loc>
     <lastmod>${currentDate}</lastmod>
   </sitemap>
 </sitemapindex>`

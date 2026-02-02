@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server'
 import { api } from '../lib/api'
+import { toSlug } from '../lib/slug'
 
 export const revalidate = 3600
 
@@ -40,7 +41,8 @@ export async function GET() {
     .map(p => {
       const raw = typeof p === 'string' ? p : (p?.name || p?.slug || p?.fullname || p?.title || p?.Name)
       if (!raw || typeof raw !== 'string') return ''
-      const safe = encodeURIComponent(raw.trim())
+      const slug = toSlug(raw)
+      const safe = encodeURIComponent(slug)
       if (!safe) return ''
       return `  <url>\n    <loc>${siteUrl}/pornstar/${safe}</loc>\n    <lastmod>${currentDate}</lastmod>\n    <changefreq>weekly</changefreq>\n    <priority>0.7</priority>\n  </url>`
     })

@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server'
 import { api } from '../lib/api'
+import { toSlug } from '../lib/slug'
 
 export const revalidate = 3600
 
@@ -77,7 +78,15 @@ export async function GET(req) {
   }
 
   // Deduplicate and sort
-  const normalized = Array.from(new Set(tags.map(t => (typeof t === 'string' ? t.trim() : (t?.name || t?.slug || t?.tag || t?.title || '')).trim()).filter(Boolean))).sort((a, b) => a.localeCompare(b))
+  const normalized = Array.from(
+    new Set(
+      tags
+        .map(t => (typeof t === 'string' ? t.trim() : (t?.name || t?.slug || t?.tag || t?.title || '')).trim())
+        .filter(Boolean)
+        .map(t => toSlug(t))
+        .filter(Boolean)
+    )
+  ).sort((a, b) => a.localeCompare(b))
 
   // Paginate
   const start = (page - 1) * per
