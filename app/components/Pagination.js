@@ -48,10 +48,10 @@ export default function Pagination({ basePath = '/', currentPage = 1, totalPages
       <div className="flex items-center gap-1 sm:gap-2">
         {pageNumbers.map((p, idx) => (
           p === '...' ? (
-            <span key={idx} className="px-1 sm:px-2 text-gray-400 select-none text-xs sm:text-sm">…</span>
+            <span key={`ellipsis-${idx}`} className="px-1 sm:px-2 text-gray-400 select-none text-xs sm:text-sm">…</span>
           ) : (
             <Link
-              key={p}
+              key={`${p}-${idx}`}
               href={pageHref(p)}
               aria-current={p === currentPage ? 'page' : undefined}
               className={`px-2 sm:px-3.5 py-1.5 sm:py-2 rounded-md border text-xs sm:text-sm transition-colors min-w-[32px] sm:min-w-[40px] text-center ${p === currentPage ? 'bg-blue-600 border-blue-600 text-white font-semibold' : 'text-gray-100 border-gray-600 bg-gray-900 hover:border-sky-500 hover:text-white'}`}
@@ -75,27 +75,52 @@ export default function Pagination({ basePath = '/', currentPage = 1, totalPages
 function getVisiblePages(current, total, isMobile = false) {
   // Show fewer pages on mobile
   const delta = isMobile ? 1 : 2
-  const range = []
-  const rangeWithDots = []
-  let l
-
-  for (let i = 1; i <= total; i++) {
-    if (i === 1 || i === total || (i >= current - delta && i <= current + delta)) {
-      range.push(i)
-    }
+  
+  // Create a set to avoid duplicates
+  const pages = new Set();
+  
+  // Add pages in a way that avoids duplicates
+  pages.add(1); // Always add first page
+  
+  // Add pages around current page (avoiding first to prevent duplication)
+  const start = Math.max(2, current - delta);
+  const end = Math.min(total - 1, current + delta);
+  
+  for (let i = start; i <= end; i++) {
+    pages.add(i);
   }
-
-  for (let i of range) {
-    if (l) {
-      if (i - l === 2) {
-        rangeWithDots.push(l + 1)
-      } else if (i - l !== 1) {
-        rangeWithDots.push('...')
+  
+  // Add last page if it's different from first
+  if (total > 1) {
+    pages.add(total);
+  }
+  
+  // Convert to sorted array
+  const sortedPages = Array.from(pages).sort((a, b) => a - b);
+  
+  // Build result with ellipsis handling
+  const result = [];
+  
+  for (let i = 0; i < sortedPages.length; i++) {
+    const pageNum = sortedPages[i];
+    
+    // Add ellipsis or missing page numbers between current and previous
+    if (i > 0) {
+      const prevPage = sortedPages[i - 1];
+      const gap = pageNum - prevPage;
+      
+      if (gap === 2) {
+        // Gap of exactly 2 means one page is missing (e.g., 1 and 3, missing 2)
+        result.push(prevPage + 1);
+      } else if (gap > 2) {
+        // Gap of more than 2, add ellipsis
+        result.push('...');
       }
     }
-    rangeWithDots.push(i)
-    l = i
+    
+    // Always add the current page number
+    result.push(pageNum);
   }
-
-  return rangeWithDots
+  
+  return result;
 }
