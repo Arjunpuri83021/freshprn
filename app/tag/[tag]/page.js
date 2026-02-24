@@ -82,6 +82,14 @@ async function getData(tag, page) {
   return { list: items, totalPages, totalRecords }
 }
 
+async function getCustomContent(tag) {
+  try {
+    return await api.getCustomContent('tag', tag)
+  } catch {
+    return null
+  }
+}
+
 // Generate unique content based on tag and actual videos
 function generateTagContent(tag, totalRecords, totalPages, page, videos) {
   const tagName = tag.replace(/-/g, ' ')
@@ -291,8 +299,10 @@ export default async function TagPage({ params, searchParams }) {
   const page = Number(params.page || searchParams?.page || 1)
   const { list, totalPages, totalRecords } = await getData(tag, page)
   
-  // Generate unique content for page 1 using actual videos
-  const content = page === 1 ? generateTagContent(tag, totalRecords, totalPages, page, list) : null
+  const customContent = page === 1 ? await getCustomContent(tag) : null
+
+  // Generate unique content for page 1 using actual videos (fallback)
+  const content = page === 1 && !customContent ? generateTagContent(tag, totalRecords, totalPages, page, list) : null
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
@@ -311,8 +321,18 @@ export default async function TagPage({ params, searchParams }) {
       {/* Pagination */}
       <Pagination basePath={`/tag/${params.tag}`} currentPage={page} totalPages={totalPages} />
 
-      {/* Unique content section - Below videos, only on page 1 */}
-      {content && (
+      {customContent && customContent.isActive && (
+        <div className="mt-8 text-gray-300 leading-relaxed space-y-4 bg-gray-800/50 rounded-lg p-6">
+          <h2 className="text-xl font-semibold mb-4">{customContent.title}</h2>
+          <div
+            className="custom-content-display"
+            dangerouslySetInnerHTML={{ __html: String(customContent.content || '').replace(/\n/g, '<br>') }}
+          />
+        </div>
+      )}
+
+      {/* Fallback to generated content if no custom content */}
+      {!customContent && content && (
         <div className="mt-8 text-gray-300 leading-relaxed space-y-4 bg-gray-800/50 rounded-lg p-6">
           <h2 className="text-xl font-semibold mb-4">About {tag.replace(/-/g, ' ')} Sex Videos</h2>
           <p>{content.intro}</p>

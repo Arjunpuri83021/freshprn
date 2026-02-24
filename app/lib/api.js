@@ -75,4 +75,16 @@ export const api = {
     method: 'POST', 
     body: { views: currentViews + 1 } 
   }),
+
+  // Custom Content
+  getCustomContent: (pageType, slug) => request(`/custom-content/${pageType}/${slug}`),
+  getAllCustomContent: (page = 1, limit = 20, pageType = '') => {
+    const params = new URLSearchParams({ page: page.toString(), limit: limit.toString() })
+    if (pageType) params.append('pageType', pageType)
+    return request(`/custom-content?${params}`)
+  },
+  createCustomContent: (data) => request('/custom-content', { method: 'POST', body: data }),
+  updateCustomContent: (id, data) => request(`/custom-content/${id}`, { method: 'PUT', body: data }),
+  deleteCustomContent: (id) => request(`/custom-content/${id}`, { method: 'DELETE' }),
+  toggleCustomContentStatus: (id) => request(`/custom-content/${id}/toggle`, { method: 'PATCH' }),
 }

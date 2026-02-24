@@ -49,6 +49,26 @@ a {
   }
 }
 
+ .custom-content-display,
+ .custom-content-display * {
+   color: inherit !important;
+ }
+
+ .custom-content-display a {
+   color: rgb(var(--foreground-rgb)) !important;
+   text-decoration: underline;
+ }
+
+ .custom-content-display h1,
+ .custom-content-display h2,
+ .custom-content-display h3,
+ .custom-content-display h4,
+ .custom-content-display h5,
+ .custom-content-display h6 {
+   color: inherit !important;
+   font-weight: 700;
+ }
+
 /* Custom styles */
 .video-card {
   transition: all 0.3s ease;

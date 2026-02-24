@@ -290,6 +290,14 @@ function getCategoryContent(slug, titleBase, totalRecords, totalPages) {
   return { ...base, intro, closing }
 }
 
+async function getCustomContent(slug) {
+  try {
+    return await api.getCustomContent('category', slug)
+  } catch {
+    return null
+  }
+}
+
 export default async function CategoryPage({ params, searchParams }) {
   const slug = params.slug
   const page = Number(params.page || searchParams?.page || 1)
@@ -297,8 +305,10 @@ export default async function CategoryPage({ params, searchParams }) {
   const data = await api.searchPosts(query, page, 16, '').catch(() => ({ records: [], totalPages: 1, totalRecords: 0 }))
   const titleBase = categoryTitles[slug] || slug.replace(/-/g, ' ')
   
-  // Generate unique content for page 1
-  const content = page === 1 ? getCategoryContent(slug, titleBase, data.totalRecords || 0, data.totalPages || 1) : null
+  const customContent = page === 1 ? await getCustomContent(slug) : null
+
+  // Generate unique content for page 1 (fallback)
+  const content = page === 1 && !customContent ? getCategoryContent(slug, titleBase, data.totalRecords || 0, data.totalPages || 1) : null
   
   // Build small dynamic highlights from current page data (unique per page load)
   const records = Array.isArray(data.records) ? data.records : []
@@ -326,8 +336,18 @@ export default async function CategoryPage({ params, searchParams }) {
       {/* Pagination */}
       <Pagination basePath={`/category/${slug}`} currentPage={page} totalPages={data.totalPages || 1} />
       
-      {/* Unique content section - Below videos, only on page 1 */}
-      {content && (
+      {customContent && customContent.isActive && (
+        <div className="mt-8 text-gray-300 leading-relaxed space-y-4 bg-gray-800/50 rounded-lg p-6">
+          <h2 className="text-xl font-semibold mb-4">{customContent.title}</h2>
+          <div
+            className="custom-content-display"
+            dangerouslySetInnerHTML={{ __html: String(customContent.content || '').replace(/\n/g, '<br>') }}
+          />
+        </div>
+      )}
+
+      {/* Fallback to generated content if no custom content */}
+      {!customContent && content && (
         <div className="mt-8 text-gray-300 leading-relaxed space-y-4 bg-gray-800/50 rounded-lg p-6">
           <h2 className="text-xl font-semibold mb-4">About {titleBase} Videos</h2>
           <p>{content.intro}</p>
