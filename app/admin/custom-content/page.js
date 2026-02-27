@@ -104,6 +104,14 @@ export default function CustomContentManagement() {
   const handleSubmit = async (e) => {
     e.preventDefault()
 
+    // Validate content is not empty HTML
+    const rawContent = formData.content || ''
+    const textContent = rawContent.replace(/<[^>]*>/g, '').trim()
+    if (!textContent) {
+      alert('Content field cannot be empty. Please write some content.')
+      return
+    }
+
     try {
       const adminData = JSON.parse(localStorage.getItem('adminData') || '{}')
       const payload = {
@@ -135,7 +143,36 @@ export default function CustomContentManagement() {
         fetchContent()
       } else {
         const error = await response.json().catch(() => ({}))
-        alert(error.message || 'Error saving content')
+        const errMsg = error.message || 'Error saving content'
+
+        // If content already exists, offer to load it for editing
+        if (errMsg.toLowerCase().includes('already exists')) {
+          const confirmEdit = confirm(
+            `⚠️ "${formData.slug}" (${formData.pageType}) ke liye content pehle se exist karta hai!\n\nKya aap existing content ko EDIT karna chahte hain?`
+          )
+          if (confirmEdit) {
+            // Fetch the existing content and open in edit mode
+            try {
+              const existRes = await fetch(
+                `${baseUrl}/custom-content/${formData.pageType}/${formData.slug}`
+              )
+              if (existRes.ok) {
+                const existingItem = await existRes.json()
+                handleEdit(existingItem)
+              } else {
+                // Fallback: just reload the list and close modal
+                fetchContent()
+                setShowModal(false)
+                alert('List reload kar diya — existing content dhundhkar edit karo.')
+              }
+            } catch {
+              fetchContent()
+              setShowModal(false)
+            }
+          }
+        } else {
+          alert(errMsg)
+        }
       }
     } catch (error) {
       console.error('Network error:', error)
@@ -318,9 +355,8 @@ export default function CustomContentManagement() {
                                   </button>
                                   <button
                                     onClick={() => toggleStatus(item._id)}
-                                    className={`btn btn-sm ${
-                                      item.isActive ? 'btn-outline-warning' : 'btn-outline-success'
-                                    }`}
+                                    className={`btn btn-sm ${item.isActive ? 'btn-outline-warning' : 'btn-outline-success'
+                                      }`}
                                     title={item.isActive ? 'Deactivate' : 'Activate'}
                                   >
                                     {item.isActive ? <EyeOff size={14} /> : <Eye size={14} />}

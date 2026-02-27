@@ -45,40 +45,48 @@ async function getData(name, page) {
   return { list: res.records || res.data || [], totalPages: res.totalPages || 1, totalRecords: res.totalRecords || 0 }
 }
 
+async function getCustomContent(name) {
+  try {
+    return await api.getCustomContent('pornstar', name)
+  } catch {
+    return null
+  }
+}
+
 // Generate unique content based on performer and actual videos
 function generatePerformerContent(name, totalRecords, totalPages, videos) {
   const displayName = name.replace(/-/g, ' ')
-  
+
   // Extract data from actual videos on page
   const videoTitles = videos.slice(0, 5).map(v => v.titel || v.title).filter(Boolean)
   const allTags = [...new Set(videos.flatMap(v => v.tags || []).filter(Boolean))].slice(0, 10)
-  
+
   // Fix: Calculate average views properly (convert string to number if needed)
   const validVideos = videos.filter(v => v.views && !isNaN(Number(v.views)))
-  const avgViews = validVideos.length > 0 
-    ? Math.round(validVideos.reduce((sum, v) => sum + Number(v.views), 0) / validVideos.length) 
+  const avgViews = validVideos.length > 0
+    ? Math.round(validVideos.reduce((sum, v) => sum + Number(v.views), 0) / validVideos.length)
     : 0
-  
+
   // Fix: Calculate average duration properly (convert string to number if needed)
   const validDurations = videos.filter(v => v.minutes && !isNaN(Number(v.minutes)))
-  const avgDuration = validDurations.length > 0 
-    ? Math.round(validDurations.reduce((sum, v) => sum + Number(v.minutes), 0) / validDurations.length) 
+  const avgDuration = validDurations.length > 0
+    ? Math.round(validDurations.reduce((sum, v) => sum + Number(v.minutes), 0) / validDurations.length)
     : 0
-  
+
   const coPerformers = [...new Set(videos.flatMap(v => (v.name || []).filter(n => n.toLowerCase() !== name.toLowerCase())))].slice(0, 5)
-  
+
   // Extract keywords from video titles for content generation
   const titleKeywords = videoTitles.map(title => {
     const words = title.toLowerCase().split(/[\s-]+/)
     const skipWords = ['the', 'a', 'an', 'and', 'or', 'but', 'in', 'on', 'at', 'to', 'for', 'of', 'with', 'by', 'from', 'up', 'about', 'into', 'through', 'during']
     return words.filter(w => w.length > 3 && !skipWords.includes(w)).slice(0, 3)
   }).flat().filter((v, i, a) => a.indexOf(v) === i).slice(0, 5)
-  
+
   // Generate seed for consistent variation (salted by brand to differ from other sites)
   const seed = name.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0)
   const brandSalt = 'FreshPrn'.split('').reduce((acc, ch) => acc + ch.charCodeAt(0), 0)
   const variant = (seed + brandSalt) % 5
-  
+
   const getIntro = () => {
     // Fixed view text calculation
     let viewText = 'featuring both popular favorites and newer releases'
@@ -95,7 +103,7 @@ function generatePerformerContent(name, totalRecords, totalPages, videos) {
         viewText = `with an average of ${avgViews} views per video`
       }
     }
-    
+
     return [
       `Explore ${totalRecords}+ videos featuring ${displayName} in high definition. This collection showcases diverse performances ${viewText}, demonstrating strong viewer engagement and content quality.`,
       `Watch ${totalRecords}+ ${displayName} videos spanning various categories and scenarios. The collection includes ${viewText}, reflecting the performer's popularity and appeal.`,
@@ -104,7 +112,7 @@ function generatePerformerContent(name, totalRecords, totalPages, videos) {
       `Access ${totalRecords}+ videos featuring ${displayName} in diverse scenarios and settings. Content ${viewText} indicates strong viewer reception and repeat engagement.`
     ][variant]
   }
-  
+
   const getDetails = () => {
     // Build category mentions from actual videos
     let categoryMention = ''
@@ -116,7 +124,7 @@ function generatePerformerContent(name, totalRecords, totalPages, videos) {
         categoryMention = ` This page features ${displayName} in ${formattedTags.slice(0, 3).join(', ')}, ${formattedTags.slice(3, 5).join(', ')}${allTags.length > 5 ? `, and ${allTags.length - 5} other categories` : ''}.`
       }
     }
-    
+
     // Build co-performer mentions
     let coPerformerMention = ''
     if (coPerformers.length > 0) {
@@ -129,23 +137,23 @@ function generatePerformerContent(name, totalRecords, totalPages, videos) {
         coPerformerMention = ` Co-stars on this page include ${formattedCoPerformers[0]}, ${formattedCoPerformers[1]}${coPerformers.length > 2 ? `, and ${coPerformers.length - 2} other performers` : ''}.`
       }
     }
-    
+
     // Build duration mention
     let durationMention = ''
     if (avgDuration > 0) {
-      durationMention = avgDuration > 30 
+      durationMention = avgDuration > 30
         ? ` Videos average ${avgDuration} minutes, providing substantial content with proper scene development.`
         : avgDuration > 15
-        ? ` Scenes average ${avgDuration} minutes, offering well-paced content without unnecessary padding.`
-        : ` Content averages ${avgDuration} minutes, focusing on core action with efficient pacing.`
+          ? ` Scenes average ${avgDuration} minutes, offering well-paced content without unnecessary padding.`
+          : ` Content averages ${avgDuration} minutes, focusing on core action with efficient pacing.`
     }
-    
+
     // Build title-based content mention
     let titleContentMention = ''
     if (titleKeywords.length > 0) {
       titleContentMention = ` Popular themes in ${displayName}'s videos include ${titleKeywords.slice(0, 3).join(', ')} scenarios.`
     }
-    
+
     const baseDetails = [
       `${displayName}'s performances span professional studio productions and select collaborations. Each video showcases the performer's range and on-screen presence across different scenarios.`,
       `The collection features ${displayName} in both leading and ensemble roles. Content includes solo performances, duo scenes, and group scenarios with varying production styles.`,
@@ -153,10 +161,10 @@ function generatePerformerContent(name, totalRecords, totalPages, videos) {
       `This ${displayName} library includes content from established studios and independent producers. The performer's versatility is evident across different genres and scene types.`,
       `${displayName}'s catalog represents diverse content from various sources. Productions range from high-budget studio releases to intimate, focused performances.`
     ][variant]
-    
+
     return baseDetails + categoryMention + coPerformerMention + durationMention + titleContentMention
   }
-  
+
   const getNavigation = () => {
     // Add example video title
     let exampleMention = ''
@@ -164,7 +172,7 @@ function generatePerformerContent(name, totalRecords, totalPages, videos) {
       const firstTitle = videoTitles[0].length > 60 ? videoTitles[0].substring(0, 60) + '...' : videoTitles[0]
       exampleMention = ` Current page includes videos like "${firstTitle}"${videoTitles.length > 1 ? ' among other scenes' : ''}.`
     }
-    
+
     const baseNav = [
       `Navigate ${totalPages} pages of ${displayName} content, with 16 videos per page organized for easy browsing. Use pagination controls to explore the complete collection.`,
       `Browse through ${totalPages} pages featuring 16 ${displayName} videos each. The pagination system enables efficient navigation through the entire catalog.`,
@@ -172,10 +180,10 @@ function generatePerformerContent(name, totalRecords, totalPages, videos) {
       `Access ${totalPages} pages of ${displayName} videos with 16 scenes per page. The collection is organized to showcase variety across different pages.`,
       `The ${displayName} collection spans ${totalPages} pages with 16 high-quality videos each. Page navigation allows discovery throughout the extensive library.`
     ][variant]
-    
+
     return baseNav + exampleMention
   }
-  
+
   const getClosing = () => {
     return [
       `All ${displayName} videos stream free in HD quality without registration requirements. Content is optimized for desktop and mobile viewing with adaptive playback.`,
@@ -185,7 +193,7 @@ function generatePerformerContent(name, totalRecords, totalPages, videos) {
       `Enjoy ${displayName} content with unlimited free streaming in high definition. No account creation needed for viewing, with full mobile and desktop compatibility.`
     ][variant]
   }
-  
+
   return {
     intro: getIntro(),
     details: getDetails(),
@@ -198,9 +206,12 @@ export default async function PornstarPage({ params, searchParams }) {
   const name = decodeURIComponent(params.name)
   const page = Number(params.page || searchParams?.page || 1)
   const { list, totalPages, totalRecords } = await getData(name, page)
-  
-  // Generate unique content for page 1 using actual videos
-  const content = page === 1 ? generatePerformerContent(name, totalRecords, totalPages, list) : null
+
+  // Fetch custom content from admin (page 1 only)
+  const customContent = page === 1 ? await getCustomContent(params.name) : null
+
+  // Generate unique content for page 1 using actual videos (fallback if no custom content)
+  const content = page === 1 && !customContent ? generatePerformerContent(name, totalRecords, totalPages, list) : null
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
@@ -219,8 +230,19 @@ export default async function PornstarPage({ params, searchParams }) {
       {/* Pagination */}
       <Pagination basePath={`/pornstar/${params.name}`} currentPage={page} totalPages={totalPages} />
 
-      {/* Unique content section - Below videos, only on page 1 */}
-      {content && (
+      {/* Custom content from admin - shows first if available */}
+      {customContent && customContent.isActive && (
+        <div className="mt-8 text-gray-300 leading-relaxed space-y-4 bg-gray-800/50 rounded-lg p-6">
+          <h2 className="text-xl font-semibold mb-4">{customContent.title}</h2>
+          <div
+            className="custom-content-display"
+            dangerouslySetInnerHTML={{ __html: String(customContent.content || '').replace(/\n/g, '<br>') }}
+          />
+        </div>
+      )}
+
+      {/* Fallback: Auto-generated content if no custom content */}
+      {!customContent && content && (
         <div className="mt-8 text-gray-300 leading-relaxed space-y-4 bg-gray-800/50 rounded-lg p-6">
           <h2 className="text-xl font-semibold mb-4">About {name.replace(/-/g, ' ')} Videos</h2>
           <p>{content.intro}</p>
