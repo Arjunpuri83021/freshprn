@@ -17,6 +17,7 @@ export default function AdminPostsPage() {
   const [suggestedTags, setSuggestedTags] = useState([]);
   const [suggestedStars, setSuggestedStars] = useState([]);
   const [imageUrl, setImgUrl] = useState("");
+  const [previewImage, setPreviewImage] = useState("");
   const [altKeywords, setAltKeywords] = useState("");
   const [nameInput, setNameInput] = useState("");
   const [name, setname] = useState([]);
@@ -45,6 +46,7 @@ export default function AdminPostsPage() {
     e.preventDefault();
     const formData = {
       imageUrl,
+      previewImage,
       altKeywords,
       name,
       tags,
@@ -186,7 +188,7 @@ export default function AdminPostsPage() {
       const urlParams = new URLSearchParams(window.location.search);
       const p = parseInt(urlParams.get("page"));
       if (p && p > 0) setCurrentPage(p);
-    } catch (_) {}
+    } catch (_) { }
     fetchPostData();
     fetchSuggestedTags();
     fetchSuggestedStars();
@@ -273,6 +275,7 @@ export default function AdminPostsPage() {
     setIsUpdateMode(true);
     setPostId(item._id);
     setImgUrl(item.imageUrl || "");
+    setPreviewImage(item.previewImage || "");
     setAltKeywords(item.altKeywords || "");
     setname(item.name || []);
     setTags(item.tags || []);
@@ -295,7 +298,7 @@ export default function AdminPostsPage() {
       const url = new URL(window.location);
       url.searchParams.set("page", page);
       window.history.pushState({}, "", url);
-    } catch (_) {}
+    } catch (_) { }
   };
 
   const handleSearchChange = (e) => {
@@ -305,6 +308,7 @@ export default function AdminPostsPage() {
 
   const resetForm = () => {
     setImgUrl("");
+    setPreviewImage("");
     setAltKeywords("");
     setname([]);
     setTags([]);
@@ -552,7 +556,7 @@ export default function AdminPostsPage() {
               <form onSubmit={handleSubmit}>
                 <div className="admin-modal-body">
                   <div className="admin-form-group">
-                    <label htmlFor="image">Image URL</label>
+                    <label htmlFor="image">Image URL <small className="text-muted">(HD / Full Quality)</small></label>
                     <input
                       value={imageUrl}
                       onChange={(e) => setImgUrl(e.target.value)}
@@ -562,6 +566,39 @@ export default function AdminPostsPage() {
                       required
                     />
                   </div>
+
+                  <div className="admin-form-group">
+                    <label htmlFor="previewImage">
+                      Preview Image URL
+                      <small className="text-muted ms-2">(Low quality — loads first for fast page speed)</small>
+                    </label>
+                    <input
+                      value={previewImage}
+                      onChange={(e) => setPreviewImage(e.target.value)}
+                      className="form-control"
+                      type="text"
+                      id="previewImage"
+                      placeholder="e.g. https://freshporno.org/contents/.../352x198/1.jpg"
+                    />
+                    {previewImage && (
+                      <div style={{ marginTop: '8px' }}>
+                        <small className="text-muted">Preview:</small>
+                        <img
+                          src={previewImage}
+                          alt="preview thumbnail"
+                          style={{
+                            display: 'block',
+                            marginTop: '4px',
+                            height: '80px',
+                            borderRadius: '6px',
+                            border: '1px solid #444',
+                            objectFit: 'cover',
+                          }}
+                        />
+                      </div>
+                    )}
+                  </div>
+
                   <div className="admin-form-group">
                     <label>Image Alt Keywords</label>
                     <input

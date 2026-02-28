@@ -10,6 +10,7 @@ const nextConfig = {
     // Add ALL production image hosts here (API/CDN/external)
     remotePatterns: [
       { protocol: 'https', hostname: 'freshprn.com' },
+      { protocol: 'https', hostname: 'freshporno.org' },
       { protocol: 'https', hostname: 'api.majehimaje.life' },
       // { protocol: 'https', hostname: 'your-api-host.com' },
       // { protocol: 'https', hostname: 'your-cdn.com' },

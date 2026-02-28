@@ -8,13 +8,14 @@ import { api } from '../lib/api'
 
 export default function VideoCard({ video, priority = false }) {
   const [imageError, setImageError] = useState(false)
-  const [imageLoaded, setImageLoaded] = useState(false)
-  
+  const [previewLoaded, setPreviewLoaded] = useState(false)  // Phase 1: previewImage done?
+  const [hdLoaded, setHdLoaded] = useState(false)            // Phase 2: HD imageUrl done?
+
   // Get video number with multiple fallbacks
   const getVideoNumber = () => {
     return video.dynamicVideoNo || video.videoNo || null;
   }
-  
+
 
   // Format view count
   const formatViews = (views) => {
@@ -30,13 +31,13 @@ export default function VideoCard({ video, priority = false }) {
     const mins = parseInt(minutes)
     const hours = Math.floor(mins / 60)
     const remainingMins = mins % 60
-    
+
     // Generate random seconds (0-59) based on video ID for consistency
     const videoId = video._id || video.id || '0'
     const seed = videoId.slice(-2) // Use last 2 characters of ID as seed
     const randomSeconds = parseInt(seed, 16) % 60 // Convert to number and get 0-59
     const formattedSeconds = randomSeconds.toString().padStart(2, '0')
-    
+
     if (hours > 0) {
       return `${hours}:${remainingMins.toString().padStart(2, '0')}:${formattedSeconds}`
     }
@@ -78,7 +79,7 @@ export default function VideoCard({ video, priority = false }) {
     try {
       const videoId = video._id || video.id
       const currentViews = parseInt(video.views) || 0
-      
+
       // Update views in background (don't wait for response)
       api.updateViews(videoId, currentViews).catch(error => {
         console.log('Failed to update views:', error)
@@ -92,31 +93,54 @@ export default function VideoCard({ video, priority = false }) {
     <div className="video-card rounded-2xl overflow-hidden border border-white/10 bg-white/5 backdrop-blur-sm group transition-transform duration-200 hover:-translate-y-0.5 hover:shadow-xl hover:shadow-black/30">
       <Link href={`/video/${getVideoUrlSegment()}`} onClick={handleVideoClick}>
         <div className="relative aspect-video bg-gray-800">
-          {/* Thumbnail Image */}
+          {/* ── Progressive Image Loading (2-Phase LQIP) ─────────────────
+               Phase 1: previewImage (42KB) loads for ALL cards first.
+               Phase 2: HD imageUrl mounts in DOM only AFTER its
+                        previewImage onLoad fires — browser won't even
+                        request HD until preview is ready. */}
           {!imageError && video.imageUrl ? (
-            <>
-              <Image
-                src={video.imageUrl}
-                alt={getVideoTitle()}
-                fill
-                className={`object-cover transition-opacity duration-300 ${
-                  imageLoaded ? 'opacity-100' : 'opacity-0'
-                }`}
-                priority={priority}
-                onLoad={() => setImageLoaded(true)}
-                onError={() => setImageError(true)}
-                sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-              />
-              
-              {/* Loading placeholder */}
-              {!imageLoaded && (
-                <div className="absolute inset-0 bg-gradient-to-br from-gray-800 to-gray-900 animate-pulse flex items-center justify-center">
-                  <div className="w-12 h-12 border-4 border-sky-400/70 border-t-transparent rounded-full animate-spin" />
-                </div>
+            <div className="absolute inset-0">
+
+              {/* ── PHASE 1: Low-quality preview (always shown until HD ready) ── */}
+              {video.previewImage ? (
+                <Image
+                  src={video.previewImage}
+                  alt=""
+                  fill
+                  className={`object-cover transition-opacity duration-500 ${hdLoaded ? 'opacity-0' : 'opacity-100'
+                    }`}
+                  priority={priority}
+                  onLoad={() => setPreviewLoaded(true)}
+                  sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                  aria-hidden="true"
+                />
+              ) : (
+                /* No previewImage — show spinner while HD loads */
+                !hdLoaded && (
+                  <div className="absolute inset-0 bg-gradient-to-br from-gray-800 to-gray-900 animate-pulse flex items-center justify-center">
+                    <div className="w-10 h-10 border-4 border-sky-400/60 border-t-transparent rounded-full animate-spin" />
+                  </div>
+                )
               )}
-            </>
+
+              {/* ── PHASE 2: HD image — only MOUNTS after preview loaded ─────── */}
+              {(previewLoaded || !video.previewImage) && (
+                <Image
+                  src={video.imageUrl}
+                  alt={getVideoTitle()}
+                  fill
+                  className={`object-cover transition-opacity duration-700 ${hdLoaded ? 'opacity-100' : 'opacity-0'
+                    }`}
+                  priority={false}              // never priority — preview handles first paint
+                  onLoad={() => setHdLoaded(true)}
+                  onError={() => setImageError(true)}
+                  sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                />
+              )}
+
+            </div>
           ) : (
-            // Fallback placeholder
+            // Fallback — no imageUrl at all
             <div className="absolute inset-0 bg-gradient-to-br from-gray-700 to-gray-800 flex items-center justify-center">
               <Play className="w-12 h-12 text-gray-500" />
             </div>
@@ -178,7 +202,7 @@ export default function VideoCard({ video, priority = false }) {
           </div>
         )}
 
-        
+
 
         {/* Stats */}
         <div className="flex items-center justify-between text-xs text-gray-400">
@@ -196,7 +220,7 @@ export default function VideoCard({ video, priority = false }) {
               </div>
             )}
           </div>
-          
+
           {/* Video Code - Right Side */}
           {getVideoNumber() && (
             <div className="flex items-center space-x-1">
