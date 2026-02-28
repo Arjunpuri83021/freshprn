@@ -3,7 +3,7 @@ import { api } from './lib/api'
 import VideoCard from './components/VideoCard'
 import Pagination from './components/Pagination'
 
-export const revalidate = 60
+export const dynamic = 'force-dynamic'
 
 export async function generateMetadata() {
   const siteUrl = (process.env.NEXT_PUBLIC_SITE_URL || 'https://freshprn.com').replace(/\/$/, '')
@@ -69,10 +69,10 @@ export async function generateMetadata() {
         url: fullUrl,
         images: m.ogImage
           ? [
-              {
-                url: m.ogImage,
-              },
-            ]
+            {
+              url: m.ogImage,
+            },
+          ]
           : baseMeta.openGraph.images,
       },
       twitter: {
@@ -83,6 +83,14 @@ export async function generateMetadata() {
     }
   } catch (e) {
     return baseMeta
+  }
+}
+
+async function getCustomContent() {
+  try {
+    return await api.getCustomContent('home', 'home')
+  } catch {
+    return null
   }
 }
 
@@ -124,6 +132,9 @@ export default async function HomePage({ searchParams }) {
   }
   const homeContent = page === 1 ? buildHomeContent() : null
 
+  // Fetch custom content from admin (page 1 only)
+  const customContent = page === 1 ? await getCustomContent() : null
+
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
       <h1 className="text-3xl font-bold mb-6">FreshPrn Free HD Adult Videos and XXXHD Porn</h1>
@@ -143,7 +154,19 @@ export default async function HomePage({ searchParams }) {
         </div>
       </section>
 
-      {homeContent && (
+      {/* Custom content from admin - priority over auto-generated */}
+      {customContent && customContent.isActive && (
+        <section className="mt-2 text-gray-300 leading-relaxed space-y-4 bg-gray-800/50 rounded-lg p-6">
+          <h2 className="text-xl font-semibold mb-2">{customContent.title}</h2>
+          <div
+            className="custom-content-display"
+            dangerouslySetInnerHTML={{ __html: String(customContent.content || '').replace(/\n/g, '<br>') }}
+          />
+        </section>
+      )}
+
+      {/* Fallback: Auto-generated content if no custom content */}
+      {!customContent && homeContent && (
         <section className="mt-2 text-gray-300 leading-relaxed space-y-4 bg-gray-800/50 rounded-lg p-6">
           <h2 className="text-xl font-semibold mb-2">Why FreshPrn</h2>
           <p>{homeContent.intro}</p>

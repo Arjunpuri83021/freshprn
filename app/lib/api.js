@@ -37,6 +37,33 @@ async function request(path, { method = 'GET', headers = {}, body } = {}) {
   return res.text()
 }
 
+// Special no-cache request for dynamic admin content
+async function requestNoCache(path, { method = 'GET', headers = {}, body } = {}) {
+  const base = getApiBase()
+  const url = path.startsWith('http') ? path : `${base}${path}`
+
+  const res = await fetch(url, {
+    method,
+    headers: {
+      'Content-Type': 'application/json',
+      ...headers,
+    },
+    ...(body ? { body: JSON.stringify(body) } : {}),
+    cache: 'no-store', // Always fresh — no caching for admin-managed content
+  })
+
+  if (!res.ok) {
+    const text = await res.text().catch(() => '')
+    throw new Error(`API error ${res.status}: ${text}`)
+  }
+
+  const contentType = res.headers.get('content-type') || ''
+  if (contentType.includes('application/json')) {
+    return res.json()
+  }
+  return res.text()
+}
+
 export const api = {
   // Videos
   getNewVideos: (page = 1, limit = 16) => request(`/getnewVideos?page=${page}&limit=${limit}`),
@@ -67,17 +94,17 @@ export const api = {
   getAllPosts: (page = 1, limit = 16) => request(`/getpostdata?page=${page}&limit=${limit}`),
 
   // Views update
-  updateViews: (id, currentViews = 0) => request(`/updateviews/${id}`, { 
-    method: 'POST', 
-    body: { views: currentViews + 1 } 
+  updateViews: (id, currentViews = 0) => request(`/updateviews/${id}`, {
+    method: 'POST',
+    body: { views: currentViews + 1 }
   }),
-  updateRvViews: (id, currentViews = 0) => request(`/rvupdateviews/${id}`, { 
-    method: 'POST', 
-    body: { views: currentViews + 1 } 
+  updateRvViews: (id, currentViews = 0) => request(`/rvupdateviews/${id}`, {
+    method: 'POST',
+    body: { views: currentViews + 1 }
   }),
 
-  // Custom Content
-  getCustomContent: (pageType, slug) => request(`/custom-content/${pageType}/${slug}`),
+  // Custom Content — no-store cache so admin changes show instantly
+  getCustomContent: (pageType, slug) => requestNoCache(`/custom-content/${pageType}/${slug}`),
   getAllCustomContent: (page = 1, limit = 20, pageType = '') => {
     const params = new URLSearchParams({ page: page.toString(), limit: limit.toString() })
     if (pageType) params.append('pageType', pageType)
@@ -88,3 +115,4 @@ export const api = {
   deleteCustomContent: (id) => request(`/custom-content/${id}`, { method: 'DELETE' }),
   toggleCustomContentStatus: (id) => request(`/custom-content/${id}/toggle`, { method: 'PATCH' }),
 }
+

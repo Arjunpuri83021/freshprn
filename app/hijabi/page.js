@@ -31,24 +31,24 @@ function generateHijabiContent(videos, totalRecords, totalPages) {
     'Clear visuals on efficient, lightweight pages.'
   ]
   const videoTitles = videos.slice(0, 5).map(v => v.titel || v.title).filter(Boolean)
-  
+
   const titleKeywords = videoTitles.map(title => {
     const words = title.toLowerCase().split(/[\s-]+/)
     const skipWords = ['the', 'a', 'an', 'and', 'or', 'but', 'in', 'on', 'at', 'to', 'for', 'of', 'with', 'by', 'from', 'up', 'about', 'into', 'through', 'during']
     return words.filter(w => w.length > 3 && !skipWords.includes(w)).slice(0, 3)
   }).flat().filter((v, i, a) => a.indexOf(v) === i).slice(0, 5)
-  
+
   let titleMention = ''
   if (titleKeywords.length > 0) {
     titleMention = ` Popular themes include ${titleKeywords.slice(0, 3).join(', ')} scenarios.`
   }
-  
+
   let exampleMention = ''
   if (videoTitles.length > 0) {
     const firstTitle = videoTitles[0].length > 60 ? videoTitles[0].substring(0, 60) + '...' : videoTitles[0]
     exampleMention = ` Current page includes videos like "${firstTitle}" among others.`
   }
-  
+
   const base = {
     intro: `Explore ${totalRecords}+ Hijabi videos featuring Muslim women in traditional and modern settings. This collection celebrates modest beauty with performers wearing hijab and Islamic attire across various scenarios. Our Hijabi category showcases the unique appeal of covered beauty, from traditional modest settings to intimate private moments.`,
     details: `The Hijabi video library encompasses performers in traditional Islamic dress across solo, duo, and group scenarios. Content ranges from fully modest presentations to intimate private settings, respecting cultural context while delivering quality entertainment.${titleMention} Videos feature performers from various Muslim backgrounds with authentic cultural representation.`,
@@ -69,8 +69,14 @@ export default async function HijabiPage({ searchParams }) {
   const list = Array.isArray(listRaw) ? listRaw : []
   const totalPages = (res.totalPages || (res.totalRecords ? Math.max(1, Math.ceil(Number(res.totalRecords) / 16)) : 1)) || 1
   const totalRecords = res.totalRecords || 0
-  
-  const content = page === 1 ? generateHijabiContent(list, totalRecords, totalPages) : null
+
+  // Fetch custom content from admin (page 1 only)
+  let customContent = null
+  if (page === 1) {
+    try { customContent = await api.getCustomContent('hijabi', 'hijabi') } catch { }
+  }
+
+  const content = page === 1 && !customContent ? generateHijabiContent(list, totalRecords, totalPages) : null
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
@@ -78,16 +84,28 @@ export default async function HijabiPage({ searchParams }) {
         <h1 className="text-2xl font-semibold">Hijabi Videos</h1>
         <p className="text-gray-400 mt-1 text-sm">Showing page {page} of {totalPages} ({totalRecords} total videos)</p>
       </div>
-      
+
       <div className="grid video-grid">
         {list.map((v, idx) => (
           <VideoCard key={v._id || idx} video={v} />
         ))}
       </div>
-      
+
       <Pagination basePath="/hijabi?" currentPage={page} totalPages={totalPages} />
-      
-      {content && (
+
+      {/* Custom content from admin */}
+      {customContent && customContent.isActive && (
+        <div className="mt-8 text-gray-300 leading-relaxed space-y-4 bg-gray-800/50 rounded-lg p-6">
+          <h2 className="text-xl font-semibold mb-4">{customContent.title}</h2>
+          <div
+            className="custom-content-display"
+            dangerouslySetInnerHTML={{ __html: String(customContent.content || '').replace(/\n/g, '<br>') }}
+          />
+        </div>
+      )}
+
+      {/* Fallback: Auto-generated content */}
+      {!customContent && content && (
         <div className="mt-8 text-gray-300 leading-relaxed space-y-4 bg-gray-800/50 rounded-lg p-6">
           <h2 className="text-xl font-semibold mb-4">About Hijabi Videos</h2>
           <p>{content.intro}</p>
