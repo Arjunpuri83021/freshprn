@@ -26,13 +26,13 @@ export default function VideoRedirect({ link, imageUrl, title, video }) {
     if (!showIframe && hasIframe) {
       setShowIframe(true)
     }
-    
+
     // Update views in background
     if (video && (video._id || video.id)) {
       try {
         const videoId = video._id || video.id
         const currentViews = parseInt(video.views) || 0
-        
+
         api.updateViews(videoId, currentViews).catch(error => {
           console.log('Failed to update views:', error)
         })
@@ -55,7 +55,9 @@ export default function VideoRedirect({ link, imageUrl, title, video }) {
           src={video.iframeUrl}
           className="w-full h-full border-0"
           allowFullScreen
-          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+          referrerPolicy="no-referrer"
+          sandbox="allow-scripts allow-same-origin allow-forms allow-popups allow-presentation allow-pointer-lock"
           title={title || 'Video player'}
         />
       </div>
@@ -83,8 +85,8 @@ export default function VideoRedirect({ link, imageUrl, title, video }) {
         {/* Center content */}
         <div className="relative z-10 flex flex-col items-center justify-center gap-4 md:gap-8 px-4 w-full">
           {/* Small centered thumbnail */}
-          <div 
-            className="video-thumbnail-preview relative rounded-lg overflow-hidden shadow-2xl cursor-pointer hover:scale-105 transition-transform duration-200" 
+          <div
+            className="video-thumbnail-preview relative rounded-lg overflow-hidden shadow-2xl cursor-pointer hover:scale-105 transition-transform duration-200"
             onClick={handlePlay}
           >
             {imageUrl ? (
@@ -99,7 +101,7 @@ export default function VideoRedirect({ link, imageUrl, title, video }) {
             ) : (
               <div className="absolute inset-0 bg-gray-800" />
             )}
-            
+
             {/* Duration badge */}
             {video?.minutes && (
               <div className="absolute bottom-1 right-1 md:bottom-2 md:right-2 bg-black/80 text-white text-xs md:text-sm font-semibold px-1.5 py-0.5 md:px-2 md:py-1 rounded">
@@ -119,7 +121,7 @@ export default function VideoRedirect({ link, imageUrl, title, video }) {
             </button>
           )}
         </div>
-        
+
         {hasIframe && (
           <div className="absolute bottom-2 right-2 bg-blue-600 text-white text-xs px-2 py-1 rounded z-20">
             Play Here
