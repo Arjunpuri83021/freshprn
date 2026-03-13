@@ -16,6 +16,16 @@ function extractDomain(url) {
   }
 }
 
+function isDirectMp4(url) {
+  if (!url) return false
+  try {
+    const u = new URL(url)
+    return u.pathname.toLowerCase().endsWith('.mp4')
+  } catch {
+    return String(url).toLowerCase().includes('.mp4')
+  }
+}
+
 export default function VideoRedirect({ link, imageUrl, title, video }) {
   // Auto-show iframe if iframeUrl is available
   const [showIframe, setShowIframe] = useState(!!video?.iframeUrl)
@@ -49,6 +59,20 @@ export default function VideoRedirect({ link, imageUrl, title, video }) {
 
   // If iframe is available and should be shown, display it
   if (showIframe && video?.iframeUrl) {
+    if (isDirectMp4(video.iframeUrl)) {
+      return (
+        <div className="relative w-full aspect-video rounded-lg overflow-hidden bg-black">
+          <video
+            src={video.iframeUrl}
+            className="w-full h-full"
+            controls
+            playsInline
+            preload="metadata"
+          />
+        </div>
+      )
+    }
+
     return (
       <div className="relative w-full aspect-video rounded-lg overflow-hidden bg-black">
         <iframe
